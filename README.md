@@ -1,6 +1,7 @@
 # qrocodile-api-go
 
 [![CI](https://github.com/qrocodile-io/qrocodile-api-go/actions/workflows/ci.yml/badge.svg)](https://github.com/qrocodile-io/qrocodile-api-go/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/qrocodile-io/qrocodile-api-go/graph/badge.svg)](https://codecov.io/gh/qrocodile-io/qrocodile-api-go)
 [![Go Reference](https://pkg.go.dev/badge/github.com/qrocodile-io/qrocodile-api-go.svg)](https://pkg.go.dev/github.com/qrocodile-io/qrocodile-api-go)
 [![Go version](https://img.shields.io/github/go-mod/go-version/qrocodile-io/qrocodile-api-go)](go.mod)
 [![License](https://img.shields.io/github/license/qrocodile-io/qrocodile-api-go)](LICENSE)
