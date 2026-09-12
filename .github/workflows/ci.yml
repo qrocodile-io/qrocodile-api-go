@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # The drift check compares the committed types against the *deployed* API, so it can start
+  # failing without anything in this repo changing. A push-only schedule would not notice.
+  schedule:
+    - cron: '23 6 * * *'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # Reads tools/go.mod, not go.mod: golangci-lint needs a newer Go than the client itself
+      # (see CONTRIBUTING.md's Tooling section), so installing that version up front lets every
+      # step below — including building tools/ — run without an on-demand toolchain fetch. A
+      # newer toolchain builds an older `go` directive fine, so this also covers the main module.
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: tools/go.mod
+          cache: true
+          # Two modules now (see tools/), so the cache key must hash both go.sum files.
+          cache-dependency-path: |
+            go.sum
+            tools/go.sum
+
+      - run: make fmt-check
+      - run: make vet
+      - run: make lint
+
+      # Fails if internal/openapi/types.gen.go no longer describes the deployed API.
+      - run: make codegen-check
+
+      - run: make build
+
+      - run: make test
+        env:
+          QR_API_KEY: ${{ secrets.QR_API_KEY }}
+          # Whether the integration suite is allowed to skip. Pull requests from forks get no
+          # secrets, so requiring the key there would fail every outside contributor's first
+          # PR for something they cannot fix. Everywhere else — our own PRs, pushes to main,
+          # the nightly run — a missing secret has to fail rather than silently skip.
+          QR_API_INTEGRATION_REQUIRED: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
