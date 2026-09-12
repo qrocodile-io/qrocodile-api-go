@@ -45,3 +45,13 @@ jobs:
           # PR for something they cannot fix. Everywhere else — our own PRs, pushes to main,
           # the nightly run — a missing secret has to fail rather than silently skip.
           QR_API_INTEGRATION_REQUIRED: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+      # Tokenless upload only works for fork PRs; pushes to main and same-repo PRs need the
+      # token from codecov.io's repo settings. A fork PR has no access to secrets, so this
+      # step is skipped rather than failed there — coverage still uploads once merged.
+      - uses: codecov/codecov-action@v5
+        if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name != 'pull_request'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.out
+          fail_ci_if_error: true
