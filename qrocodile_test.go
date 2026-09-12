@@ -3,6 +3,7 @@ package qrocodile
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -203,4 +204,67 @@ func asAPIError(err error, target **APIError) bool {
 	}
 	*target = apiErr
 	return true
+}
+
+func TestAPIError_Error(t *testing.T) {
+	err := &APIError{Status: 422, Code: "UNPROCESSABLE", Message: "content too long for this design"}
+	got := err.Error()
+	want := "qrocodile: content too long for this design (code UNPROCESSABLE, HTTP 422)"
+	if got != want {
+		t.Errorf("Error() = %q, want %q", got, want)
+	}
+}
+
+// roundTripFunc adapts a function to http.RoundTripper, for injecting a fake transport via
+// WithHTTPClient.
+type roundTripFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func TestRenderSVG_networkFailure(t *testing.T) {
+	networkErr := errors.New("connection refused")
+	httpClient := &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return nil, networkErr
+	})}
+
+	c := NewClient("qk_live_test", WithBaseURL("http://unused.invalid"), WithHTTPClient(httpClient))
+	_, err := c.RenderSVG(context.Background(), RenderInput{Content: "https://qrocodile.io"})
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	var apiErr *APIError
+	if asAPIError(err, &apiErr) {
+		t.Fatalf("expected a plain error for a network failure, got *APIError: %v", apiErr)
+	}
+	if !strings.Contains(err.Error(), "connection refused") {
+		t.Errorf("error should wrap the network failure: %v", err)
+	}
+}
+
+func TestRegisterKey_malformedResponseBody(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusAccepted)
+		_, _ = w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	c := NewClient("", WithBaseURL(server.URL))
+	_, err := c.RegisterKey(context.Background(), "you@example.com", "")
+	if err == nil {
+		t.Fatal("expected an error for a malformed response body")
+	}
+}
+
+func TestConfirmKey_malformedResponseBody(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("not json"))
+	}))
+	defer server.Close()
+
+	c := NewClient("", WithBaseURL(server.URL))
+	_, err := c.ConfirmKey(context.Background(), "123456", ConfirmKeyIdentifier{Email: "you@example.com"})
+	if err == nil {
+		t.Fatal("expected an error for a malformed response body")
+	}
 }
