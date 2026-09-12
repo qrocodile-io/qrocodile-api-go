@@ -32,10 +32,9 @@ jobs:
       - name: Strip the leading "v" from the tag
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
 
-      # Re-run the full suite against the exact commit being released, the same "belt and
-      # braces" reasoning qrocodile-api-node's publish.yml uses: CI's own push trigger only
-      # fires on branch pushes, not tag pushes, so this is not otherwise guaranteed to have run
-      # against this commit.
+      # Re-run the full suite against the exact commit being released: CI's own push trigger
+      # only fires on branch pushes, not tag pushes, so this is not otherwise guaranteed to have
+      # run against this commit.
       - run: make check
         env:
           QR_API_KEY: ${{ secrets.QR_API_KEY }}

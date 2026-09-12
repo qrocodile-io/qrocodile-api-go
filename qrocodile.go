@@ -1,18 +1,10 @@
 // Package qrocodile is a typed Go client for the QRocodile QR Code API — render styled QR
 // codes (SVG or PNG) from content plus a design config, and issue API keys.
 //
-// The generated OpenAPI types live in the internal package and are deliberately NOT re-exported
-// wholesale — mirroring the decision @qrocodile/api (the TypeScript client) makes, and for the
-// same reason: consumers should depend on this hand-written surface, not on the shape of the
-// spec's JSON. Two flat, single-level enums are re-exported directly ([PresetID], [ErrorCode]),
-// since aliasing them costs nothing and lets callers validate against the same set the API
-// accepts. The full design config is deliberately NOT re-exported field-by-field: its true shape
-// is a deeply nested tree of oneOf unions (colors that are either a hex string or a gradient
-// object, module styles with their own per-style parameter sets, …), which do not fit Go's type
-// system as cleanly as TypeScript's, and — more importantly — are not how this client's primary
-// consumer (the qrocodile CLI) uses them: a design is read whole from a JSON file exported by the
-// QR Designer's "Copy JSON" button and forwarded verbatim. [RenderInput.Design] reflects that:
-// it is raw JSON, not a struct.
+// A design config is passed as raw JSON via [RenderInput.Design], typically exported whole from
+// the QR Designer's "Copy JSON" button, rather than built field-by-field as a Go struct — its
+// shape is deeply nested and not a natural fit for one. [PresetID] and [ErrorCode] are exposed as
+// enums so callers can validate against the same values the API accepts.
 package qrocodile
 
 import (
@@ -29,27 +21,22 @@ import (
 // DefaultBaseURL is the hosted QRocodile QR Code API.
 const DefaultBaseURL = "https://api.qrocodile.io"
 
-// PresetID is a built-in design preset. The enum is generated from the API's own OpenAPI
-// document, so it cannot silently fall out of step with what the API actually accepts — a
-// preset the API drops or adds shows up here the next time the SDK is regenerated, not as a
-// runtime surprise. See the QR Designer for what each preset actually looks like; this type
-// only carries the IDs.
+// PresetID is a built-in design preset, kept in sync with what the API accepts. See the QR
+// Designer for what each preset actually looks like; this type only carries the IDs.
 type PresetID = openapi.QrDesignConfigPreset
 
-// ErrorCode is every failure code the API can return, as a closed enum. Generated from the
-// spec for the same reason as [PresetID]. Branch on this, never on an error's message — see
-// [APIError].
+// ErrorCode is every failure code the API can return, as a closed enum kept in sync with the
+// API. Branch on this, never on an error's message — see [APIError].
 type ErrorCode = openapi.ErrorCode
 
-// Lang selects the language of the verification email [Client.RegisterKey] sends. Generated
-// from the spec for the same reason as [PresetID]. The zero value omits `lang` from the
-// request, which the API defaults to "en".
+// Lang selects the language of the verification email [Client.RegisterKey] sends. The zero
+// value omits `lang` from the request, which the API defaults to "en".
 type Lang = openapi.RegisterKeyJSONBodyLang
 
-// QrDesignConfig is the full design config's generated type, exposed for JSON
-// marshaling/unmarshaling convenience. Its own fields reference further generated types that
-// are not exported (see the package doc) — construct a design by building or editing JSON, via
-// [RenderInput.Design], rather than by populating this struct field-by-field in Go.
+// QrDesignConfig is the full design config's type, exposed for JSON marshaling/unmarshaling
+// convenience. Its own fields reference further types that are not exported (see the package
+// doc) — construct a design by building or editing JSON, via [RenderInput.Design], rather than
+// by populating this struct field-by-field in Go.
 type QrDesignConfig = openapi.QrDesignConfig
 
 // Client talks to the QRocodile QR Code API. Create one with [NewClient].

@@ -8,8 +8,7 @@
 // it fails while that is still fixable.
 //
 // Keeping the changelog authoritative is the point. The release notes are a copy of one
-// section, never a second thing to write and keep in step. Mirrors
-// qrocodile-api-node's scripts/changelog-section.mjs.
+// section, never a second thing to write and keep in step.
 package main
 
 import (

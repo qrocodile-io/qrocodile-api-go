@@ -10,7 +10,7 @@
 // Non-interactive: pass the email as arg 1 and, once you have it, the code as arg 2.
 //
 // The API emails a code rather than a link because mail-security appliances prefetch links and
-// burn single-use tokens before a human ever clicks (docs/qrocodile-auth-concept.md).
+// burn single-use tokens before a human ever clicks.
 package main
 
 import (

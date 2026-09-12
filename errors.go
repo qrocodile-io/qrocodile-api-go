@@ -3,8 +3,7 @@ package qrocodile
 import "fmt"
 
 // APIError is returned by the [Client] methods when the API answers with an error response
-// (non-2xx). The TypeScript client (@qrocodile/api) calls the equivalent type QrApiError; this
-// one drops the redundant "Qr" since it is already package-qualified as qrocodile.APIError.
+// (non-2xx).
 //
 // A genuine network failure (offline, DNS, aborted, timeout) is returned as the underlying
 // error instead of an *APIError — it never reached the API, so there is no status or code to
