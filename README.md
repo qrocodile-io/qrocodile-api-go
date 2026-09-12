@@ -1,7 +1,9 @@
 # qrocodile-api-go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/qrocodile-io/qrocodile-api-go.svg)](https://pkg.go.dev/github.com/qrocodile-io/qrocodile-api-go)
 [![CI](https://github.com/qrocodile-io/qrocodile-api-go/actions/workflows/ci.yml/badge.svg)](https://github.com/qrocodile-io/qrocodile-api-go/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/qrocodile-io/qrocodile-api-go.svg)](https://pkg.go.dev/github.com/qrocodile-io/qrocodile-api-go)
+[![Go version](https://img.shields.io/github/go-mod/go-version/qrocodile-io/qrocodile-api-go)](go.mod)
+[![License](https://img.shields.io/github/license/qrocodile-io/qrocodile-api-go)](LICENSE)
 
 Typed Go client for the [QRocodile QR Code API](https://qrocodile.io/en/qr-code-api/) — generate styled QR codes (SVG or PNG) from content plus a design config.
 
