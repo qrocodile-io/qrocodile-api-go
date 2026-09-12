@@ -4,6 +4,8 @@ Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.o
 
 ## Unreleased
 
+## 0.1.1
+
 ### Fixed
 
 - Improve the documentation's clarity and accuracy throughout.
