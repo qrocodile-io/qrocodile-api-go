@@ -4,6 +4,11 @@ Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.o
 
 ## Unreleased
 
+### Added
+
+- `PresetIDs()`, `ModuleStyleIDs()`, `FinderStyleIDs()`, `LogoIDs()`, and `ErrorCodes()` — functions returning the full value list for each of those enum types, generated from the API's own OpenAPI document so they can't drift from what the API actually accepts. Each call returns a fresh copy, so mutating one caller's result can't affect another's. Previously only the *types* were exposed (`PresetID` etc.), with no way for a consumer to enumerate their valid values without reaching into this package's internals.
+- `ModuleStyleID`, `FinderStyleID`, and `LogoID` — three more single-value design-config enums exposed the same way `PresetID` already was, for the fields that make sense as a flat choice rather than a nested object (see the package doc comment).
+
 ## 0.1.1
 
 ### Fixed

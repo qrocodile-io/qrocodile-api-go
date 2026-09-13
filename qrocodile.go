@@ -3,8 +3,13 @@
 //
 // A design config is passed as raw JSON via [RenderInput.Design], typically exported whole from
 // the QR Designer's "Copy JSON" button, rather than built field-by-field as a Go struct — its
-// shape is deeply nested and not a natural fit for one. [PresetID] and [ErrorCode] are exposed as
-// enums so callers can validate against the same values the API accepts.
+// shape is deeply nested and not a natural fit for one. The flat, single-value fields that make
+// sense as CLI-style flags or form inputs — [PresetID], [ModuleStyleID], [FinderStyleID],
+// [LogoID], [ErrorCode] — are exposed as enums instead, each with a matching `<Type>s()`
+// function (e.g. [PresetIDs]) returning every valid value, so callers can validate against or
+// offer exactly what the API accepts. Those are functions, not package vars, so each call
+// returns its own copy — a shared var would let one caller's in-place edit (a sort, a filter
+// written to overwrite in place) corrupt the list for every other caller in the process.
 package qrocodile
 
 import (
@@ -25,9 +30,46 @@ const DefaultBaseURL = "https://api.qrocodile.io"
 // Designer for what each preset actually looks like; this type only carries the IDs.
 type PresetID = openapi.QrDesignConfigPreset
 
+// PresetIDs returns every valid PresetID, generated from the API's own OpenAPI document — so it
+// can't fall out of step with what the API actually accepts. Use it to validate a preset before
+// sending it, or to build a menu/completion list. Each call returns a fresh copy; safe to
+// modify.
+func PresetIDs() []PresetID { return append([]PresetID(nil), openapi.QrDesignConfigPresetValues...) }
+
+// ModuleStyleID selects the shape the QR code's modules (the pattern) are drawn with.
+type ModuleStyleID = openapi.QrDesignConfigModuleStyleId
+
+// ModuleStyleIDs returns every valid ModuleStyleID, generated from the API's own OpenAPI
+// document. Each call returns a fresh copy; safe to modify.
+func ModuleStyleIDs() []ModuleStyleID {
+	return append([]ModuleStyleID(nil), openapi.QrDesignConfigModuleStyleIdValues...)
+}
+
+// FinderStyleID selects the shape the three corner finders are drawn with.
+type FinderStyleID = openapi.QrDesignConfigFinderStyleId
+
+// FinderStyleIDs returns every valid FinderStyleID, generated from the API's own OpenAPI
+// document. Each call returns a fresh copy; safe to modify.
+func FinderStyleIDs() []FinderStyleID {
+	return append([]FinderStyleID(nil), openapi.QrDesignConfigFinderStyleIdValues...)
+}
+
+// LogoID selects a built-in logo icon to place on the QR code. For your own artwork instead,
+// build the `logo` field of [RenderInput.Design]'s JSON with a `data` key rather than `id` — see
+// the API's design-config reference.
+type LogoID = openapi.QrDesignConfigLogo0Id
+
+// LogoIDs returns every valid LogoID, generated from the API's own OpenAPI document. Each call
+// returns a fresh copy; safe to modify.
+func LogoIDs() []LogoID { return append([]LogoID(nil), openapi.QrDesignConfigLogo0IdValues...) }
+
 // ErrorCode is every failure code the API can return, as a closed enum kept in sync with the
 // API. Branch on this, never on an error's message — see [APIError].
 type ErrorCode = openapi.ErrorCode
+
+// ErrorCodes returns every valid ErrorCode, generated from the API's own OpenAPI document. Each
+// call returns a fresh copy; safe to modify.
+func ErrorCodes() []ErrorCode { return append([]ErrorCode(nil), openapi.ErrorCodeValues...) }
 
 // Lang selects the language of the verification email [Client.RegisterKey] sends. The zero
 // value omits `lang` from the request, which the API defaults to "en".

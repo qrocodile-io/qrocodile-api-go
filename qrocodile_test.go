@@ -268,3 +268,66 @@ func TestConfirmKey_malformedResponseBody(t *testing.T) {
 		t.Fatal("expected an error for a malformed response body")
 	}
 }
+
+func TestEnumValueLists_nonEmptyAndValid(t *testing.T) {
+	if ids := PresetIDs(); len(ids) == 0 {
+		t.Error("PresetIDs() is empty")
+	} else {
+		for _, id := range ids {
+			if !id.Valid() {
+				t.Errorf("PresetIDs() contains %q, which fails its own Valid()", id)
+			}
+		}
+	}
+
+	if ids := ModuleStyleIDs(); len(ids) == 0 {
+		t.Error("ModuleStyleIDs() is empty")
+	} else {
+		for _, id := range ids {
+			if !id.Valid() {
+				t.Errorf("ModuleStyleIDs() contains %q, which fails its own Valid()", id)
+			}
+		}
+	}
+
+	if ids := FinderStyleIDs(); len(ids) == 0 {
+		t.Error("FinderStyleIDs() is empty")
+	} else {
+		for _, id := range ids {
+			if !id.Valid() {
+				t.Errorf("FinderStyleIDs() contains %q, which fails its own Valid()", id)
+			}
+		}
+	}
+
+	if ids := LogoIDs(); len(ids) == 0 {
+		t.Error("LogoIDs() is empty")
+	} else {
+		for _, id := range ids {
+			if !id.Valid() {
+				t.Errorf("LogoIDs() contains %q, which fails its own Valid()", id)
+			}
+		}
+	}
+
+	if codes := ErrorCodes(); len(codes) == 0 {
+		t.Error("ErrorCodes() is empty")
+	} else {
+		for _, code := range codes {
+			if !code.Valid() {
+				t.Errorf("ErrorCodes() contains %q, which fails its own Valid()", code)
+			}
+		}
+	}
+}
+
+func TestEnumValueLists_eachCallReturnsAnIndependentCopy(t *testing.T) {
+	ids := PresetIDs()
+	original := ids[0]
+	ids[0] = "mutated"
+
+	fresh := PresetIDs()
+	if fresh[0] != original {
+		t.Errorf("mutating one PresetIDs() call's result changed a later call's result: got %q, want %q — the two calls are sharing a backing array", fresh[0], original)
+	}
+}
