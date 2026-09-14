@@ -2,7 +2,7 @@
 
 Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.org/), with the usual pre-1.0 caveat: while the major is `0`, a **minor** bump may carry breaking changes.
 
-## Unreleased
+## 0.2.0
 
 ### Added
 
