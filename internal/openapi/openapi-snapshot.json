@@ -19,12 +19,38 @@
       "name": "QRocodile",
       "url": "https://qrocodile.io/en/feedback/"
     },
-    "description": "Generate styled QR codes for any content, without a browser — the same designs the [QR Designer](https://qrocodile.io/en/) produces, drawn by the same render engine.\n\n**Simple:** `GET /v1/qr?content=...\u0026preset=...` returns the image directly.\n\n**Full control:** `POST /v1/qr` with a `{ content, design }` body for palettes, gradients, logos and halos. Design it visually in the [QR Designer](https://qrocodile.io/en/), open the encoded-content bar with the chevron at the bottom right of the preview, choose **Copy JSON**, and send that object as `design` — the render matches what you were looking at.\n\n**Keys.** Every `/v1/qr` request needs one: `Authorization: Bearer qk_live_…`. They are free — get one on the [qrocodile.io/en/qr-code-api](https://qrocodile.io/en/qr-code-api/) page, confirm the 6-digit code from the mail, and it is shown exactly once. Renders are capped at 60 per minute per key; ask us if you need more.\n\n**Output** is SVG or PNG, chosen by `format` alone — the `Accept` header is not consulted.\n\n**Failures** all answer `{ error: { code, message } }`, an unknown path included. `code` comes from a fixed set and is the field to branch on; `message` is for a human and may be reworded.\n\n**Not callable from a browser.** CORS withholds `Authorization` from browser origins on purpose, so an API key cannot end up in frontend code. Call the render endpoints from your own backend.\n\nThe preset, module-style and finder-style IDs, and the parameters each style accepts, are listed on the [API page](https://qrocodile.io/en/qr-code-api/).",
+    "description": "Generate styled QR codes for any content, without a browser — the same designs the [QR Designer](https://qrocodile.io/en/) produces, drawn by the same render engine.\n\n**Simple:** `GET /v1/qr?content=...\u0026preset=...` returns the image directly.\n\n**Full control:** `POST /v1/qr` with a `{ content, design }` body for palettes, gradients, logos and halos. Design it visually in the [QR Designer](https://qrocodile.io/en/), open the encoded-content bar with the chevron at the bottom right of the preview, choose **Copy JSON**, and send that object as `design` — the render matches what you were looking at.\n\n**Keys.** Every `/v1/qr` request needs one: `Authorization: Bearer qk_live_…`. They are free — get one on the [qrocodile.io/en/qr-code-api](https://qrocodile.io/en/qr-code-api/) page, confirm the 6-digit code from the mail, and it is shown exactly once. Renders are capped at 60 per minute per key; ask us if you need more.\n\n**Output** is SVG or PNG, chosen by `format` alone — the `Accept` header is not consulted.\n\n**Open in the designer.** An image response carries `Link: \u003c…\u003e; rel=\"edit-form\"`, a link that opens the same code — design and content — in the [QR Designer](https://qrocodile.io/en/) to keep editing. A link opens exactly the rendered code or is not sent: when it cannot carry something (an uploaded logo, say, or content too long for a link), there is no `Link` header and `X-Designer-Url-Unavailable` names why.\n\n**Failures** all answer `{ error: { code, message } }`, an unknown path included. `code` comes from a fixed set and is the field to branch on; `message` is for a human and may be reworded.\n\n**Not callable from a browser.** CORS withholds `Authorization` from browser origins on purpose, so an API key cannot end up in frontend code. Call the render endpoints from your own backend.\n\nThe preset, module-style and finder-style IDs, and the parameters each style accepts, are listed on the [API page](https://qrocodile.io/en/qr-code-api/).",
     "title": "QRocodile QR Code API",
     "version": "1.0.0"
   },
   "openapi": "3.0.3",
   "paths": {
+    "/": {
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "headers": {}
+          }
+        }
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "headers": {}
+          }
+        }
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "headers": {}
+          }
+        }
+      }
+    },
     "/v1/health": {
       "get": {
         "description": "Basic liveness check. Returns 200 when the API is up.",
@@ -467,7 +493,7 @@
                     "type": "string"
                   },
                   "rid": {
-                    "description": "Reference from the link in the verification email (`?r=…`), so someone arriving that way need not retype their address. Provide either this or `email`. It selects the pending signup but authorizes nothing on its own — the code does that.",
+                    "description": "Reference from the link in the verification email (`#r=…`), so someone arriving that way need not retype their address. Provide either this or `email`. It selects the pending signup but authorizes nothing on its own — the code does that.",
                     "pattern": "^[0-9a-f]{32}$",
                     "type": "string"
                   }
@@ -1052,37 +1078,37 @@
             }
           },
           {
-            "description": "Quiet zone around the QR code, in modules. One module is the minimum, so 0 and 1 both render a single-module zone.",
+            "description": "Quiet zone around the QR code, in modules. One module is the minimum.",
             "in": "query",
             "name": "margin",
             "required": false,
             "schema": {
               "default": 2,
               "maximum": 20,
-              "minimum": 0,
+              "minimum": 1,
               "type": "integer"
             }
           },
           {
-            "description": "Module (foreground) color, as `#rgb`, `#rrggbb` or `#rrggbbaa`. A preset sets its own — see `preset` for when this overrides it. For a gradient or a multi-color palette, use POST /v1/qr.",
+            "description": "Module (foreground) color, as `#rgb` or `#rrggbb`. A preset sets its own — see `preset` for when this overrides it. For a gradient or a multi-color palette, use POST /v1/qr.",
             "in": "query",
             "name": "moduleColor",
             "required": false,
             "schema": {
               "default": "#000000",
-              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
               "type": "string"
             }
           },
           {
-            "description": "Background color, as `#rgb`, `#rrggbb` or `#rrggbbaa`, or `transparent` to leave it unpainted. A preset sets its own, which this overrides.",
+            "description": "Background color, as `#rgb` or `#rrggbb`, or `transparent` to leave it unpainted. A preset sets its own, which this overrides.",
             "in": "query",
             "name": "background",
             "required": false,
             "schema": {
               "anyOf": [
                 {
-                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                   "type": "string"
                 },
                 {
@@ -1565,7 +1591,7 @@
                       "background": {
                         "anyOf": [
                           {
-                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                             "type": "string"
                           },
                           {
@@ -1589,20 +1615,23 @@
                         "type": "string"
                       },
                       "finderColorInherit": {
+                        "default": false,
                         "description": "Corners take their per-cell color from the pattern instead of `finderFrameColor` and `finderEyeColor`.",
                         "type": "boolean"
                       },
                       "finderEyeColor": {
                         "anyOf": [
                           {
-                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                             "type": "string"
                           },
                           {
                             "properties": {
                               "angle": {
                                 "default": 0,
-                                "description": "Angle of a linear gradient, in degrees. Ignored by a radial gradient.",
+                                "description": "Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.",
+                                "maximum": 360,
+                                "minimum": 0,
                                 "type": "number"
                               },
                               "stops": {
@@ -1610,13 +1639,15 @@
                                 "items": {
                                   "anyOf": [
                                     {
-                                      "description": "A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.",
+                                      "description": "A color on its own, placed evenly among the other stops — `#0d9488`.",
+                                      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                       "type": "string"
                                     },
                                     {
                                       "properties": {
                                         "color": {
                                           "description": "The stop’s color, as hex — `#0d9488`.",
+                                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                           "type": "string"
                                         },
                                         "offset": {
@@ -1659,14 +1690,16 @@
                       "finderFrameColor": {
                         "anyOf": [
                           {
-                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                             "type": "string"
                           },
                           {
                             "properties": {
                               "angle": {
                                 "default": 0,
-                                "description": "Angle of a linear gradient, in degrees. Ignored by a radial gradient.",
+                                "description": "Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.",
+                                "maximum": 360,
+                                "minimum": 0,
                                 "type": "number"
                               },
                               "stops": {
@@ -1674,13 +1707,15 @@
                                 "items": {
                                   "anyOf": [
                                     {
-                                      "description": "A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.",
+                                      "description": "A color on its own, placed evenly among the other stops — `#0d9488`.",
+                                      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                       "type": "string"
                                     },
                                     {
                                       "properties": {
                                         "color": {
                                           "description": "The stop’s color, as hex — `#0d9488`.",
+                                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                           "type": "string"
                                         },
                                         "offset": {
@@ -1758,10 +1793,11 @@
                             }
                           ]
                         },
-                        "description": "Tuning parameters for the finder style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.",
+                        "description": "Tuning parameters for the finder style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). A value outside the range or options the style declares is refused. An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.",
                         "type": "object"
                       },
                       "finderUseModuleStyle": {
+                        "default": false,
                         "description": "Let the module style draw the corner finders itself. Only effective for styles that can render finders, and the only way to express relief and 3D designs whose corners must stay depth-sorted with the pattern. Supersedes `finderStyleId`.",
                         "type": "boolean"
                       },
@@ -1799,7 +1835,7 @@
                               "palette": {
                                 "description": "Colors the halo is drawn from when `mode` is `palette`.",
                                 "items": {
-                                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                   "type": "string"
                                 },
                                 "maxItems": 32,
@@ -1906,7 +1942,7 @@
                             "properties": {
                               "color": {
                                 "description": "Color the icon is recolored to.",
-                                "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                                "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                 "type": "string"
                               },
                               "fillInterior": {
@@ -2057,22 +2093,24 @@
                       },
                       "margin": {
                         "default": 2,
-                        "description": "Quiet zone around the QR code, in modules. One module is the minimum, so 0 and 1 both render a single-module zone.",
+                        "description": "Quiet zone around the QR code, in modules. One module is the minimum.",
                         "maximum": 20,
-                        "minimum": 0,
+                        "minimum": 1,
                         "type": "integer"
                       },
                       "moduleColor": {
                         "anyOf": [
                           {
-                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                             "type": "string"
                           },
                           {
                             "properties": {
                               "angle": {
                                 "default": 0,
-                                "description": "Angle of a linear gradient, in degrees. Ignored by a radial gradient.",
+                                "description": "Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.",
+                                "maximum": 360,
+                                "minimum": 0,
                                 "type": "number"
                               },
                               "stops": {
@@ -2080,13 +2118,15 @@
                                 "items": {
                                   "anyOf": [
                                     {
-                                      "description": "A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.",
+                                      "description": "A color on its own, placed evenly among the other stops — `#0d9488`.",
+                                      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                       "type": "string"
                                     },
                                     {
                                       "properties": {
                                         "color": {
                                           "description": "The stop’s color, as hex — `#0d9488`.",
+                                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                                           "type": "string"
                                         },
                                         "offset": {
@@ -2124,13 +2164,12 @@
                             "type": "object"
                           }
                         ],
-                        "default": "#000000",
-                        "description": "Color of the modules — a solid hex color or a gradient."
+                        "description": "Color of the modules — a solid hex color or a gradient, `#000000` without one. Under a `modulePalette` it is the base fill most styles draw beneath the palette, and defaults to the palette’s first color."
                       },
                       "modulePalette": {
                         "description": "Draw the modules from several colors at once, arranged by `paletteMode`. Use this instead of `moduleColor` for multi-color patterns.",
                         "items": {
-                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+                          "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
                           "type": "string"
                         },
                         "maxItems": 32,
@@ -2215,7 +2254,7 @@
                             }
                           ]
                         },
-                        "description": "Tuning parameters for the module style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.",
+                        "description": "Tuning parameters for the module style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). A value outside the range or options the style declares is refused. An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.",
                         "type": "object"
                       },
                       "paletteDither": {

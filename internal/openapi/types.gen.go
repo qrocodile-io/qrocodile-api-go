@@ -1444,7 +1444,7 @@ type QrDesignConfig struct {
 	// FinderStyleId Shape the three corner finders are drawn with.
 	FinderStyleId *QrDesignConfigFinderStyleId `json:"finderStyleId,omitempty"`
 
-	// FinderStyleParams Tuning parameters for the finder style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.
+	// FinderStyleParams Tuning parameters for the finder style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). A value outside the range or options the style declares is refused. An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.
 	FinderStyleParams *map[string]QrDesignConfig_FinderStyleParams_AdditionalProperties `json:"finderStyleParams,omitempty"`
 
 	// FinderUseModuleStyle Let the module style draw the corner finders itself. Only effective for styles that can render finders, and the only way to express relief and 3D designs whose corners must stay depth-sorted with the pattern. Supersedes `finderStyleId`.
@@ -1501,10 +1501,10 @@ type QrDesignConfig struct {
 	// Logo A logo placed on the QR code: either a built-in icon by `id`, or your own artwork as base64 in `data`. Not both.
 	Logo *QrDesignConfig_Logo `json:"logo,omitempty"`
 
-	// Margin Quiet zone around the QR code, in modules. One module is the minimum, so 0 and 1 both render a single-module zone.
+	// Margin Quiet zone around the QR code, in modules. One module is the minimum.
 	Margin *int `json:"margin,omitempty"`
 
-	// ModuleColor Color of the modules — a solid hex color or a gradient.
+	// ModuleColor Color of the modules — a solid hex color or a gradient, `#000000` without one. Under a `modulePalette` it is the base fill most styles draw beneath the palette, and defaults to the palette’s first color.
 	ModuleColor *QrDesignConfig_ModuleColor `json:"moduleColor,omitempty"`
 
 	// ModulePalette Draw the modules from several colors at once, arranged by `paletteMode`. Use this instead of `moduleColor` for multi-color patterns.
@@ -1513,7 +1513,7 @@ type QrDesignConfig struct {
 	// ModuleStyleId Shape the modules (the pattern) are drawn with. The enum lists every style this build can render.
 	ModuleStyleId *QrDesignConfigModuleStyleId `json:"moduleStyleId,omitempty"`
 
-	// ModuleStyleParams Tuning parameters for the module style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.
+	// ModuleStyleParams Tuning parameters for the module style. Which keys it accepts depends on the style: the [QR Designer](https://qrocodile.io/en/) exposes them as that style’s own sliders, and they are tabulated per style on the [API page](https://qrocodile.io/en/qr-code-api/). A value outside the range or options the style declares is refused. An unrecognized key is ignored rather than rejected — a style that drops a parameter should not break a stored design — though a key over 64 characters is refused.
 	ModuleStyleParams *map[string]QrDesignConfig_ModuleStyleParams_AdditionalProperties `json:"moduleStyleParams,omitempty"`
 
 	// PaletteDither Jitter of the color-sample position, in modules, which breaks hard palette bands into a grain, off at 0.
@@ -1548,7 +1548,7 @@ type QrDesignConfigFinderEyeColor0 = string
 
 // QrDesignConfigFinderEyeColor1 defines model for QrDesignConfig.FinderEyeColor.1.
 type QrDesignConfigFinderEyeColor1 struct {
-	// Angle Angle of a linear gradient, in degrees. Ignored by a radial gradient.
+	// Angle Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.
 	Angle *float32 `json:"angle,omitempty"`
 
 	// Stops Two to sixteen color stops, spread evenly unless placed. A stop is either a color string or `{ color, offset }` with `offset` between 0 and 1.
@@ -1558,7 +1558,7 @@ type QrDesignConfigFinderEyeColor1 struct {
 	Type QrDesignConfigFinderEyeColor1Type `json:"type"`
 }
 
-// QrDesignConfigFinderEyeColor1Stops0 A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.
+// QrDesignConfigFinderEyeColor1Stops0 A color on its own, placed evenly among the other stops — `#0d9488`.
 type QrDesignConfigFinderEyeColor1Stops0 = string
 
 // QrDesignConfigFinderEyeColor1Stops1 defines model for QrDesignConfig.FinderEyeColor.1.Stops.1.
@@ -1588,7 +1588,7 @@ type QrDesignConfigFinderFrameColor0 = string
 
 // QrDesignConfigFinderFrameColor1 defines model for QrDesignConfig.FinderFrameColor.1.
 type QrDesignConfigFinderFrameColor1 struct {
-	// Angle Angle of a linear gradient, in degrees. Ignored by a radial gradient.
+	// Angle Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.
 	Angle *float32 `json:"angle,omitempty"`
 
 	// Stops Two to sixteen color stops, spread evenly unless placed. A stop is either a color string or `{ color, offset }` with `offset` between 0 and 1.
@@ -1598,7 +1598,7 @@ type QrDesignConfigFinderFrameColor1 struct {
 	Type QrDesignConfigFinderFrameColor1Type `json:"type"`
 }
 
-// QrDesignConfigFinderFrameColor1Stops0 A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.
+// QrDesignConfigFinderFrameColor1Stops0 A color on its own, placed evenly among the other stops — `#0d9488`.
 type QrDesignConfigFinderFrameColor1Stops0 = string
 
 // QrDesignConfigFinderFrameColor1Stops1 defines model for QrDesignConfig.FinderFrameColor.1.Stops.1.
@@ -1722,7 +1722,7 @@ type QrDesignConfigModuleColor0 = string
 
 // QrDesignConfigModuleColor1 defines model for QrDesignConfig.ModuleColor.1.
 type QrDesignConfigModuleColor1 struct {
-	// Angle Angle of a linear gradient, in degrees. Ignored by a radial gradient.
+	// Angle Angle of a linear gradient, in degrees, 0–360. Ignored by a radial gradient.
 	Angle *float32 `json:"angle,omitempty"`
 
 	// Stops Two to sixteen color stops, spread evenly unless placed. A stop is either a color string or `{ color, offset }` with `offset` between 0 and 1.
@@ -1732,7 +1732,7 @@ type QrDesignConfigModuleColor1 struct {
 	Type QrDesignConfigModuleColor1Type `json:"type"`
 }
 
-// QrDesignConfigModuleColor1Stops0 A color on its own, placed evenly among the other stops. Use hex — `#0d9488`.
+// QrDesignConfigModuleColor1Stops0 A color on its own, placed evenly among the other stops — `#0d9488`.
 type QrDesignConfigModuleColor1Stops0 = string
 
 // QrDesignConfigModuleColor1Stops1 defines model for QrDesignConfig.ModuleColor.1.Stops.1.
@@ -1752,7 +1752,7 @@ type QrDesignConfig_ModuleColor_1_Stops_Item struct {
 // QrDesignConfigModuleColor1Type Gradient geometry.
 type QrDesignConfigModuleColor1Type string
 
-// QrDesignConfig_ModuleColor Color of the modules — a solid hex color or a gradient.
+// QrDesignConfig_ModuleColor Color of the modules — a solid hex color or a gradient, `#000000` without one. Under a `modulePalette` it is the base fill most styles draw beneath the palette, and defaults to the palette’s first color.
 type QrDesignConfig_ModuleColor struct {
 	union json.RawMessage
 }
@@ -1805,7 +1805,7 @@ type ConfirmKeyJSONBody struct {
 	// Email The address the code was sent to. Provide either this or `rid`.
 	Email *openapi_types.Email `json:"email,omitempty"`
 
-	// Rid Reference from the link in the verification email (`?r=…`), so someone arriving that way need not retype their address. Provide either this or `email`. It selects the pending signup but authorizes nothing on its own — the code does that.
+	// Rid Reference from the link in the verification email (`#r=…`), so someone arriving that way need not retype their address. Provide either this or `email`. It selects the pending signup but authorizes nothing on its own — the code does that.
 	Rid *string `json:"rid,omitempty"`
 }
 
@@ -1823,13 +1823,13 @@ type RenderQrCodeParams struct {
 	// Size Image width and height in pixels. Defaults to 300 for SVG and 1,024 for PNG.
 	Size *int `form:"size,omitempty" json:"size,omitempty"`
 
-	// Margin Quiet zone around the QR code, in modules. One module is the minimum, so 0 and 1 both render a single-module zone.
+	// Margin Quiet zone around the QR code, in modules. One module is the minimum.
 	Margin *int `form:"margin,omitempty" json:"margin,omitempty"`
 
-	// ModuleColor Module (foreground) color, as `#rgb`, `#rrggbb` or `#rrggbbaa`. A preset sets its own — see `preset` for when this overrides it. For a gradient or a multi-color palette, use POST /v1/qr.
+	// ModuleColor Module (foreground) color, as `#rgb` or `#rrggbb`. A preset sets its own — see `preset` for when this overrides it. For a gradient or a multi-color palette, use POST /v1/qr.
 	ModuleColor *string `form:"moduleColor,omitempty" json:"moduleColor,omitempty"`
 
-	// Background Background color, as `#rgb`, `#rrggbb` or `#rrggbbaa`, or `transparent` to leave it unpainted. A preset sets its own, which this overrides.
+	// Background Background color, as `#rgb` or `#rrggbb`, or `transparent` to leave it unpainted. A preset sets its own, which this overrides.
 	Background *struct {
 		union json.RawMessage
 	} `form:"background,omitempty" json:"background,omitempty"`
