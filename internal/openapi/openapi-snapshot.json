@@ -25,32 +25,6 @@
   },
   "openapi": "3.0.3",
   "paths": {
-    "/": {
-      "delete": {
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "headers": {}
-          }
-        }
-      },
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "headers": {}
-          }
-        }
-      },
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "headers": {}
-          }
-        }
-      }
-    },
     "/v1/health": {
       "get": {
         "description": "Basic liveness check. Returns 200 when the API is up.",
@@ -985,6 +959,7 @@
                 "halloween",
                 "brixx",
                 "tetris",
+                "retroConsole",
                 "bubbles",
                 "botanical",
                 "autumn",
@@ -995,7 +970,7 @@
                 "connected",
                 "rainyDay",
                 "blocky",
-                "christmas",
+                "christmasSweater",
                 "valentines",
                 "icy",
                 "summer",
@@ -2209,6 +2184,7 @@
                           "halfmoon",
                           "flourish",
                           "spooky",
+                          "knit",
                           "leaves",
                           "characters",
                           "brixx",
@@ -2316,6 +2292,7 @@
                           "halloween",
                           "brixx",
                           "tetris",
+                          "retroConsole",
                           "bubbles",
                           "botanical",
                           "autumn",
@@ -2326,7 +2303,7 @@
                           "connected",
                           "rainyDay",
                           "blocky",
-                          "christmas",
+                          "christmasSweater",
                           "valentines",
                           "icy",
                           "summer",

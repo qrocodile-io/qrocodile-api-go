@@ -2,6 +2,18 @@
 
 Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.org/), with the usual pre-1.0 caveat: while the major is `0`, a **minor** bump may carry breaking changes.
 
+## Unreleased
+
+### Added
+
+- Add the `knit` module style and the `retroConsole` preset.
+
+### Changed
+
+- **Breaking:** rename the `christmas` preset to `christmasSweater`, as in the API. `PresetIDs()` no longer lists `christmas`, and a design that sets `"preset": "christmas"` needs to use `christmasSweater` instead.
+- Follow the API's tightened validation. It now refuses a `margin` below 1, gradient angles outside 0–360, style parameter values outside the range a style declares, and `#rrggbbaa` colors (only `#rgb` and `#rrggbb` remain).
+- `finderUseModuleStyle` and `finderColorInherit` are documented as defaulting to `false`.
+
 ## 0.2.0
 
 ### Added
