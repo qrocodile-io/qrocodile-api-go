@@ -77,7 +77,7 @@ func TestExtractSection(t *testing.T) {
 	})
 }
 
-// The failure path is the one that matters — it is what stops a release going out with nothing
+// The failure path is the one that matters: it is what stops a release going out with nothing
 // written about it, so it has to actually exit non-zero. Runs the built binary rather than
 // calling main() directly, since the behavior under test includes the process exit code.
 func TestCLI_missingVersion(t *testing.T) {

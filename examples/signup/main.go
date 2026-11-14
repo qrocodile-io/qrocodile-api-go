@@ -10,7 +10,7 @@
 // Non-interactive: pass the email as arg 1 and, once you have it, the code as arg 2.
 //
 // The API emails a code rather than a link because mail-security appliances prefetch links and
-// burn single-use tokens before a human ever clicks.
+// use up single-use tokens before a human ever clicks.
 package main
 
 import (
@@ -60,7 +60,7 @@ func run() error {
 	if _, err := qr.RegisterKey(ctx, email, ""); err != nil {
 		return fmt.Errorf("✗ Registration failed: %w", err)
 	}
-	fmt.Fprintln(os.Stderr, "✓ Email sent. It carries a 6-digit code — enter it here to reveal your API key.")
+	fmt.Fprintln(os.Stderr, "✓ Email sent. It carries a 6-digit code: enter it here to reveal your API key.")
 
 	code := codeFrom(argOrEmpty(2))
 	if code == "" {
@@ -72,14 +72,14 @@ func run() error {
 
 	result, err := qr.ConfirmKey(ctx, code, qrocodile.ConfirmKeyIdentifier{Email: email})
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "  Five wrong codes burn the pending signup — register again to get a new one.")
+		fmt.Fprintln(os.Stderr, "  Five wrong codes invalidate the pending signup. Register again to get a new one.")
 		return fmt.Errorf("✗ Confirmation failed: %w", err)
 	}
 
 	if result.Replaced {
-		fmt.Fprintln(os.Stderr, "\n! This replaced an existing key for that address — the old one no longer works.")
+		fmt.Fprintln(os.Stderr, "\n! This replaced an existing key for that address. The old one no longer works.")
 	}
-	fmt.Fprintln(os.Stderr, "\n✓ Your API key (store it now — it is not shown again):")
+	fmt.Fprintln(os.Stderr, "\n✓ Your API key (store it now, it is not shown again):")
 	fmt.Println(result.ApiKey) // stdout only, so it can be piped/captured
 	return nil
 }

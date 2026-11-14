@@ -1,18 +1,18 @@
 // Command codegen regenerates internal/openapi/types.gen.go from the QRocodile API's OpenAPI
 // document.
 //
-// The document has no named components/schemas — every request/response shape, including the
+// The document has no named components/schemas: every request/response shape, including the
 // full design config, is inlined directly under its operation. Fed straight to oapi-codegen,
 // that produces anonymous nested structs for `design` and a separate,
-// differently-named string-enum type for `error.code` per operation and status — unusable as a
+// differently-named string-enum type for `error.code` per operation and status, which is unusable as a
 // public API surface. This tool hoists both into named schemas first:
 //
 //   - `design` (from POST /v1/qr's request body) becomes `#/components/schemas/QrDesignConfig`.
 //   - The `error.code` enum, repeated identically across every error response in the document
-//     (they all come from one shared Zod enum server-side), becomes `#/components/schemas/ErrorCode`.
+//     (they all come from one shared enum on the server), becomes `#/components/schemas/ErrorCode`.
 //
 // Run with `go run ./cmd/codegen`. Add `-check` to fail if the committed generated file is
-// out of date instead of overwriting it — the mode a CI drift check runs.
+// out of date instead of overwriting it. This is the mode a CI drift check runs.
 package main
 
 import (
@@ -34,7 +34,7 @@ import (
 	"time"
 )
 
-// defaultSpecURL is the production document — the committed generated code describes the public
+// defaultSpecURL is the production document: the committed generated code describes the public
 // contract, not whatever a developer's local/dev instance happens to be running.
 const defaultSpecURL = "https://api.qrocodile.io/docs/json"
 
@@ -105,11 +105,11 @@ func run(check bool, specURL string) error {
 
 	configPath := filepath.Join(repoRoot, "internal", "openapi", "codegen.yaml")
 	// oapi-codegen's version is pinned in tools/go.mod, a separate module so its own Go-version
-	// requirement never raises the floor this module's own consumers need — see CONTRIBUTING.md.
+	// requirement never raises the floor this module's own consumers need (see CONTRIBUTING.md).
 	// `make tools` builds this binary; it does not build itself on demand.
 	oapiCodegenPath := filepath.Join(repoRoot, "tools", "bin", "oapi-codegen")
 	if _, err := os.Stat(oapiCodegenPath); err != nil {
-		return fmt.Errorf("oapi-codegen binary not found at %s — run `make tools` first", oapiCodegenPath)
+		return fmt.Errorf("oapi-codegen binary not found at %s: run `make tools` first", oapiCodegenPath)
 	}
 	cmd := exec.Command(oapiCodegenPath, "-config", configPath, tmp.Name())
 	cmd.Stderr = os.Stderr
@@ -139,7 +139,7 @@ func run(check bool, specURL string) error {
 				return fmt.Errorf("reading committed %s: %w", f.path, err)
 			}
 			if !bytes.Equal(existing, f.content) {
-				return fmt.Errorf("%s is out of date with %s — run `go run ./cmd/codegen` and commit the result", f.path, specURL)
+				return fmt.Errorf("%s is out of date with %s: run `go run ./cmd/codegen` and commit the result", f.path, specURL)
 			}
 		}
 		fmt.Println("codegen: up to date")
@@ -160,8 +160,8 @@ func run(check bool, specURL string) error {
 // declaring, for every string-enum type oapi-codegen produced (every type with at least one
 // associated `const` of that type), a `<Type>Values = []<Type>{...}` slice listing every valid
 // value in the order oapi-codegen already emitted them (alphabetical by generated constant
-// name). oapi-codegen has no built-in equivalent — it emits individual constants and a Valid()
-// method per enum type, but nothing that enumerates them — and hand-writing these lists would
+// name). oapi-codegen has no built-in equivalent: it emits individual constants and a Valid()
+// method per enum type, but nothing that enumerates them, and hand-writing these lists would
 // be exactly the kind of hand-copied, driftable enum this project has avoided everywhere else.
 // Parsing the generated source (rather than re-deriving the value lists from the OpenAPI schema
 // directly) means every emitted value is guaranteed to reference a constant oapi-codegen itself
@@ -263,14 +263,14 @@ func hoistDesignConfig(doc map[string]any) error {
 }
 
 // hoistErrorCode finds every `error.code` enum schema in the document, checks they're all
-// identical (they come from one shared Zod enum server-side), hoists a hand-authored
+// identical (they come from one shared enum on the server), hoists a hand-authored
 // #/components/schemas/ErrorCode carrying that enum, and replaces every occurrence with a $ref.
 //
 // The schema is authored here rather than copied from whichever occurrence the walk visits
 // first: `walk` traverses a map[string]any tree, and Go's map iteration order is randomized
 // per run, so copying a found schema's own `description` (varying only cosmetically, if at
-// all, between occurrences) would make the generated file's doc comment — and therefore the
-// file itself — nondeterministic between runs of this tool. Copying only the verified-identical
+// all, between occurrences) would make the generated file's doc comment, and therefore the
+// file itself, nondeterministic between runs of this tool. Copying only the verified-identical
 // `enum` list, never any occurrence's own fields, keeps the output the same every time.
 func hoistErrorCode(doc map[string]any) error {
 	var enums [][]any
@@ -296,11 +296,11 @@ func hoistErrorCode(doc map[string]any) error {
 	})
 
 	if len(enums) == 0 {
-		return fmt.Errorf("no error.code enum schemas found — has the API's error shape changed?")
+		return fmt.Errorf("no error.code enum schemas found: has the API's error shape changed?")
 	}
 	for _, enum := range enums[1:] {
 		if !reflect.DeepEqual(enum, enums[0]) {
-			return fmt.Errorf("error.code enums are not identical across the document (%v vs %v) — the shared-enum assumption no longer holds, hand-review before hoisting", enums[0], enum)
+			return fmt.Errorf("error.code enums are not identical across the document (%v vs %v): the shared-enum assumption no longer holds, hand-review before hoisting", enums[0], enum)
 		}
 	}
 
@@ -313,8 +313,8 @@ func hoistErrorCode(doc map[string]any) error {
 	}
 
 	// Second pass to rewrite every occurrence: doing this after validation (rather than
-	// collecting mutable references during the same walk) keeps the walk callback pure —
-	// find-only — matching hoistErrorResponse's shape below and avoiding a codeSchemaRefs
+	// collecting mutable references during the same walk) keeps the walk callback pure
+	// (find-only), matching hoistErrorResponse's shape below and avoiding a codeSchemaRefs
 	// slice that exists only to be mutated once, later.
 	walk(doc, func(node map[string]any) {
 		errorProp, ok := node["error"].(map[string]any)
@@ -334,7 +334,7 @@ func hoistErrorCode(doc map[string]any) error {
 }
 
 // hoistNamedResponse hoists the JSON response schema at paths[path][method].responses[status]
-// to #/components/schemas/<name> and replaces it with a $ref — for the handful of success
+// to #/components/schemas/<name> and replaces it with a $ref, for the handful of success
 // bodies (RegisterKeyResult, ConfirmKeyResult) that, like `design`, are inlined rather than
 // $ref'd, and only exist once each so there's nothing to deduplicate.
 func hoistNamedResponse(doc map[string]any, name, path, method, status string) error {
@@ -358,13 +358,13 @@ func hoistNamedResponse(doc map[string]any, name, path, method, status string) e
 	return nil
 }
 
-// hoistErrorResponse finds every `{ error: { code, message } }` response schema — by this point
-// `code` is already a $ref to ErrorCode (hoistErrorCode ran first) — hoists a hand-authored
+// hoistErrorResponse finds every `{ error: { code, message } }` response schema (by this point
+// `code` is already a $ref to ErrorCode, since hoistErrorCode ran first), hoists a hand-authored
 // #/components/schemas/ErrorResponse, and replaces every one of them with a $ref.
 //
 // The schema is authored here rather than copied from whichever response the traversal visits
-// first, for two reasons: map iteration order is randomized per run (see hoistErrorCode), and
-// — independent of that — each response's own `description`/`example` is specific to that
+// first, for two reasons: map iteration order is randomized per run (see hoistErrorCode), and,
+// independently of that, each response's own `description`/`example` is specific to that
 // endpoint and status ("the design was malformed", say), which would be actively misleading
 // attached to a type meant to represent every error response generically.
 func hoistErrorResponse(doc map[string]any) error {
@@ -412,7 +412,7 @@ func hoistErrorResponse(doc map[string]any) error {
 	}
 
 	if !found {
-		return fmt.Errorf("no {error:{code,message}} response schema found — has the API's error shape changed?")
+		return fmt.Errorf("no {error:{code,message}} response schema found: has the API's error shape changed?")
 	}
 	return setComponentSchema(doc, "ErrorResponse", map[string]any{
 		"type":     "object",
@@ -436,7 +436,7 @@ func hoistErrorResponse(doc map[string]any) error {
 // looksLikeErrorEnvelope reports whether schema is shaped `{ type: object, properties: { error:
 // { properties: { code: {$ref: .../ErrorCode}, message: {type: string} } } } }`. Deliberately
 // ignores `description`/`example`, which differ legitimately per endpoint even though the
-// structure — and therefore the Go type oapi-codegen would generate — is identical.
+// structure, and therefore the Go type oapi-codegen would generate, is identical.
 func looksLikeErrorEnvelope(schema map[string]any) bool {
 	props, ok := schema["properties"].(map[string]any)
 	if !ok {
@@ -477,8 +477,8 @@ func setComponentSchema(doc map[string]any, name string, schema map[string]any) 
 }
 
 // digGet walks a chain of map keys, erroring out (rather than panicking) the moment one is
-// missing or not a map — this runs against a live document fetched over the network, and a
-// future API change reshaping any of these paths should fail loudly here, not deep inside
+// missing or not a map: this runs against a live document fetched over the network, and a
+// future API change reshaping any of these paths should fail here with a clear error, not deep inside
 // oapi-codegen with a confusing error.
 func digGet(doc map[string]any, path ...string) (any, error) {
 	var cur any = doc
@@ -489,14 +489,14 @@ func digGet(doc map[string]any, path ...string) (any, error) {
 		}
 		next, ok := m[key]
 		if !ok {
-			return nil, fmt.Errorf("path %v: missing %q (at segment %d) — has the API's schema shape changed?", path, key, i)
+			return nil, fmt.Errorf("path %v: missing %q (at segment %d): has the API's schema shape changed?", path, key, i)
 		}
 		cur = next
 	}
 	return cur, nil
 }
 
-// walk visits every map[string]any node in the document, depth-first. Order isn't significant —
+// walk visits every map[string]any node in the document, depth-first. Order isn't significant:
 // hoistErrorCode only needs "find every matching node," not a particular traversal order.
 func walk(node any, visit func(map[string]any)) {
 	switch v := node.(type) {
@@ -530,7 +530,7 @@ func repoRoot() (string, error) {
 		return "", err
 	}
 	// Invoked via `go run ./cmd/codegen` from the repo root, so the working directory already
-	// is the repo root — this just guards against an accidental invocation from elsewhere.
+	// is the repo root; this just guards against an accidental invocation from elsewhere.
 	if _, err := os.Stat(filepath.Join(wd, "go.mod")); err != nil {
 		return "", fmt.Errorf("run this from the repo root (no go.mod found in %s)", wd)
 	}

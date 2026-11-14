@@ -50,7 +50,7 @@ const SomethingElse = 42
 		t.Errorf("non-enum const leaked into output:\n%s", got)
 	}
 
-	// The output itself must be valid, already-formatted Go — generateEnumValues runs
+	// The output itself must be valid, already-formatted Go: generateEnumValues runs
 	// format.Source before returning, so a second pass should be a no-op.
 	reformatted, err := format.Source(out)
 	if err != nil {

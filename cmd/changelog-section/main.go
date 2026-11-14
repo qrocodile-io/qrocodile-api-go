@@ -36,7 +36,7 @@ func main() {
 	if !ok {
 		fmt.Fprintf(os.Stderr, `%s has no content under "## %s".
 
-Every release needs to say what changed — the GitHub release notes are this section. Add the
+Every release needs to say what changed: the GitHub release notes are this section. Add the
 entry, then move the tag:
 
   # edit %s
@@ -55,7 +55,7 @@ re-tagging is safe.
 // extractSection returns everything under "## <version>", up to the next "## " heading or the
 // end of the file, trimmed. The second return value is false when that heading doesn't exist or
 // its section is empty. Headings are matched on the exact version so "0.1.0" cannot match
-// "0.1.0-beta.1" — a pre-release has its own section or none at all.
+// "0.1.0-beta.1", because a pre-release has its own section or none at all.
 func extractSection(markdown, version string) (string, bool) {
 	lines := strings.Split(markdown, "\n")
 

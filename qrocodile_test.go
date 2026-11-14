@@ -195,7 +195,7 @@ func TestConfirmKey_requiresEmailOrRID(t *testing.T) {
 	}
 }
 
-// asAPIError is errors.As without importing errors into every test file twice — kept trivial
+// asAPIError is errors.As without importing errors into every test file twice, kept trivial
 // on purpose.
 func asAPIError(err error, target **APIError) bool {
 	apiErr, ok := err.(*APIError)
@@ -328,6 +328,6 @@ func TestEnumValueLists_eachCallReturnsAnIndependentCopy(t *testing.T) {
 
 	fresh := PresetIDs()
 	if fresh[0] != original {
-		t.Errorf("mutating one PresetIDs() call's result changed a later call's result: got %q, want %q — the two calls are sharing a backing array", fresh[0], original)
+		t.Errorf("mutating one PresetIDs() call's result changed a later call's result: got %q, want %q: the two calls are sharing a backing array", fresh[0], original)
 	}
 }

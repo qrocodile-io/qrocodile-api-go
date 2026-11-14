@@ -9,10 +9,10 @@ import (
 )
 
 // TestIntegration_RenderSVG exercises a real render call against a live API instance. Skipped
-// unless QR_API_KEY is set — set QR_API_INTEGRATION_REQUIRED=true to fail instead of skip (the
+// unless QR_API_KEY is set. Set QR_API_INTEGRATION_REQUIRED=true to fail instead of skip (the
 // mode CI runs in everywhere except fork PRs).
 //
-// QR_API_URL overrides the base URL (defaults to the production API) — this is how a local run
+// QR_API_URL overrides the base URL (defaults to the production API). This is how a local run
 // points at a dev/staging instance, e.g. via a gitignored .env file that is never committed.
 func TestIntegration_RenderSVG(t *testing.T) {
 	apiKey := os.Getenv("QR_API_KEY")

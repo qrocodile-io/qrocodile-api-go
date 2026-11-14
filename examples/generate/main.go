@@ -45,8 +45,8 @@ func run() error {
 	}
 	qr := qrocodile.NewClient(apiKey, opts...)
 
-	// design.preset is validated against the API's registry server-side (a wrong id returns a
-	// clean 400) — swap "ocean" for any preset the API supports.
+	// The API validates design.preset (a wrong id returns a
+	// 400 error). Swap "ocean" for any preset the API supports.
 	input := qrocodile.RenderInput{
 		Content: content,
 		Design:  json.RawMessage(`{"preset":"ocean"}`),

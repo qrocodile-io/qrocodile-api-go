@@ -99,13 +99,13 @@ func run() error {
 	return nil
 }
 
-// buildLogo returns the design.logo value — a custom (base64 image) or built-in (by id) logo —
+// buildLogo returns the design.logo value, either a custom (base64 image) or a built-in (by id) logo,
 // plus a human-readable description of which kind it picked.
 func buildLogo(logoArg string) (map[string]any, string, error) {
 	info, err := os.Stat(logoArg)
 	if err != nil || info.IsDir() {
-		// Not a file → a built-in logo id. Validated against the API's registry server-side
-		// (a wrong id returns a clean 400).
+		// Not a file → a built-in logo id. The API validates it
+		// (a wrong id returns a 400 error).
 		return map[string]any{
 			"id":          logoArg,
 			"color":       "#111111",
@@ -121,7 +121,7 @@ func buildLogo(logoArg string) (map[string]any, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	// A self-describing data URL — the client sends it as-is; the API validates the mime,
+	// A self-describing data URL. The client sends it as-is, and the API validates the mime,
 	// size, and dimensions, and sanitizes SVGs before embedding.
 	dataURL := fmt.Sprintf("data:%s;base64,%s", mime, base64.StdEncoding.EncodeToString(data))
 	return map[string]any{

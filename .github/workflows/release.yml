@@ -1,9 +1,9 @@
 name: Release
 
-# Version tags only. `git tag vX.Y.Z && git push --tags` is the entire release process — see
-# CONTRIBUTING.md's "Releasing" section. Unlike npm, a Go module needs no publish step: `go get`
+# Version tags only. `git tag vX.Y.Z && git push --tags` is the entire release process (see
+# CONTRIBUTING.md's "Releasing" section). Unlike npm, a Go module needs no publish step: `go get`
 # resolves straight from the tag via the module proxy. This workflow only adds the optional,
-# non-essential part — a GitHub release page with notes, so the tag has somewhere to point.
+# non-essential part: a GitHub release page with notes, so the tag has somewhere to point.
 on:
   push:
     tags:
@@ -41,8 +41,8 @@ jobs:
           QR_API_INTEGRATION_REQUIRED: true
 
       # Deliberately before creating the release. A version with nothing written about it
-      # should stop here while the tag can still be safely moved — see
-      # cmd/changelog-section's own message for why moving it is safe at this point.
+      # should stop here while the tag can still be safely moved.
+      # cmd/changelog-section's own message explains why moving it is safe at this point.
       - name: Take the release notes from the changelog
         run: go run ./cmd/changelog-section "$version" > "$RUNNER_TEMP/release-notes.md"
 
@@ -51,7 +51,7 @@ jobs:
       - name: Create the GitHub release
         run: |
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            echo "Release $GITHUB_REF_NAME already exists — leaving it alone."
+            echo "Release $GITHUB_REF_NAME already exists, leaving it alone."
           else
             case "$version" in
               *-*) FLAGS=--prerelease ;;

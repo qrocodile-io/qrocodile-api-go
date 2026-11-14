@@ -6,9 +6,9 @@
 [![Go version](https://img.shields.io/github/go-mod/go-version/qrocodile-io/qrocodile-api-go)](go.mod)
 [![License](https://img.shields.io/github/license/qrocodile-io/qrocodile-api-go)](LICENSE)
 
-Typed Go client for the [QRocodile QR Code API](https://qrocodile.io/en/qr-code-api/) — generate styled QR codes (SVG or PNG) from content plus a design config.
+Typed Go client for the [QRocodile QR Code API](https://qrocodile.io/en/qr-code-api/). It generates styled QR codes (SVG or PNG) from content plus a design config.
 
-Requires Go 1.24 or newer (see the `go` directive in [go.mod](go.mod), the source of truth as this gets bumped).
+Requires Go 1.24 or newer (see the `go` directive in [go.mod](go.mod)).
 
 ## Install
 
@@ -23,12 +23,12 @@ Every render needs a key. Register an email address, confirm the 6-digit code th
 ```go
 qr := qrocodile.NewClient("")
 _, err := qr.RegisterKey(ctx, "you@example.com", "en")
-// → a 6-digit code arrives by email; exchange it for the key, which is shown exactly once:
+// → a 6-digit code arrives by email; exchange it for the key:
 result, err := qr.ConfirmKey(ctx, "123456", qrocodile.ConfirmKeyIdentifier{Email: "you@example.com"})
 apiKey := result.ApiKey
 ```
 
-Registering an address that already has a key is how you replace a lost one: confirming rotates it, `result.Replaced` comes back `true`, and the old key stops working immediately.
+To replace a lost or leaked key, register the same email address again. Confirming issues a new key, `result.Replaced` comes back `true`, and the old key stops working immediately.
 
 You can also get a key from the [API page](https://qrocodile.io/en/qr-code-api/) without writing any code.
 
@@ -43,14 +43,14 @@ svg, err := qr.RenderSVG(ctx, qrocodile.RenderInput{
 	Design:  json.RawMessage(`{"preset":"ocean"}`),
 })
 
-// PNG ([]byte) with full design control. Payload formats are strings you build yourself —
+// PNG ([]byte). Payload formats are strings you build yourself:
 // the API encodes `content` exactly as given.
 png, err := qr.RenderPNG(ctx, qrocodile.RenderInput{Content: "WIFI:T:WPA;S:Cafe;P:latte123;;"})
 ```
 
-There are two render methods, one per output: `RenderSVG` returns a `string`, `RenderPNG` returns a `[]byte`. Both take the same input — `Content` (the string to encode) plus optional `Design` (the full design config, as raw JSON), `Size`, and `FixContrast`. They call `POST /v1/qr`, which supports every option (the `GET /v1/qr` variant has no method yet).
+There are two render methods, one per output: `RenderSVG` returns a `string`, `RenderPNG` returns a `[]byte`. Both take the same input: `Content` (the string to encode) plus optional `Design` (the full design config, as raw JSON), `Size`, and `FixContrast`. They call `POST /v1/qr`, which supports every option. The `GET /v1/qr` variant has no method yet.
 
-`Design` is raw JSON — the object the QR Designer’s “Copy JSON” button produces, read from a file or built by hand. See the package doc comment on why the full design config isn’t exposed as a Go struct field-by-field. The quickest way to build one is the [QR Designer](https://qrocodile.io/en/) itself — style a code by hand, then use its “Copy JSON” button and paste the result straight in.
+`Design` is raw JSON, not a Go struct. To build one, style a QR code in the [QR Designer](https://qrocodile.io/en/), choose its “Copy JSON” button, and paste the result in, either read from a file or inline. You can also write the JSON by hand. The package doc comment explains why the design config isn’t exposed field by field.
 
 ## Errors
 
@@ -62,13 +62,7 @@ if errors.As(err, &apiErr) {
 }
 ```
 
-`Code` is a closed, spec-derived enum ([`qrocodile.ErrorCode`](qrocodile.go)) — branch on it, not on `Message`. A genuine network failure (offline, DNS, timeout) comes back as the underlying error instead, with no `*APIError` to unwrap.
-
-## Other environments
-
-```go
-qrocodile.NewClient(apiKey, qrocodile.WithBaseURL("http://localhost:3002"))
-```
+Branch on `Code`, not on `Message`: the message is written for a human and may be reworded. `Code` is a [`qrocodile.ErrorCode`](qrocodile.go), and `qrocodile.ErrorCodes()` lists every code the API documents. A genuine network failure (offline, DNS, timeout) comes back as the underlying error instead, with no `*APIError` to unwrap.
 
 ## Full API documentation
 
