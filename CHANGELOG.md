@@ -7,6 +7,7 @@ Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.o
 ### Added
 
 - Add the `knit` module style and the `retroConsole` preset.
+- Add the `bokeh`, `snowfall`, `gingerbread`, and `christmas-tree` module styles, the `bokeh` finder style, and the `cityLights`, `goldenHour`, `snowfall`, `winterNight`, `gingerbread`, and `christmasTree` presets.
 
 ### Changed
 

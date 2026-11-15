@@ -960,6 +960,8 @@
                 "brixx",
                 "tetris",
                 "retroConsole",
+                "cityLights",
+                "goldenHour",
                 "bubbles",
                 "botanical",
                 "autumn",
@@ -971,6 +973,10 @@
                 "rainyDay",
                 "blocky",
                 "christmasSweater",
+                "snowfall",
+                "winterNight",
+                "gingerbread",
+                "christmasTree",
                 "valentines",
                 "icy",
                 "summer",
@@ -1117,6 +1123,20 @@
             },
             "description": "The rendered QR code image — SVG or PNG per the requested `format`. The response `Content-Type` names the format actually returned and is authoritative.",
             "headers": {
+              "link": {
+                "description": "Opens the rendered code (design and content) in the QR Designer, as `\u003curl\u003e; rel=\"edit-form\"`. Sent only when the link reproduces the code exactly; otherwise `x-designer-url-unavailable` is sent instead.",
+                "schema": {
+                  "example": "\u003chttps://qrocodile.io/?…\u003e; rel=\"edit-form\"",
+                  "type": "string"
+                }
+              },
+              "x-designer-url-unavailable": {
+                "description": "Why there is no `link`: a comma-separated list of what the link cannot carry. Each item is a design config path such as `logo`, `content` for content the link cannot reproduce or fit, or `design` when the design alone makes the link too long. Sent only without a `link`.",
+                "schema": {
+                  "example": "logo",
+                  "type": "string"
+                }
+              },
               "x-ratelimit-limit": {
                 "description": "Requests allowed in the current window.",
                 "schema": {
@@ -1738,6 +1758,7 @@
                           "brush",
                           "wobbly",
                           "carved",
+                          "bokeh",
                           "scribble",
                           "drip",
                           "eroded",
@@ -2185,6 +2206,10 @@
                           "flourish",
                           "spooky",
                           "knit",
+                          "bokeh",
+                          "snowfall",
+                          "gingerbread",
+                          "christmas-tree",
                           "leaves",
                           "characters",
                           "brixx",
@@ -2293,6 +2318,8 @@
                           "brixx",
                           "tetris",
                           "retroConsole",
+                          "cityLights",
+                          "goldenHour",
                           "bubbles",
                           "botanical",
                           "autumn",
@@ -2304,6 +2331,10 @@
                           "rainyDay",
                           "blocky",
                           "christmasSweater",
+                          "snowfall",
+                          "winterNight",
+                          "gingerbread",
+                          "christmasTree",
                           "valentines",
                           "icy",
                           "summer",
@@ -2424,6 +2455,20 @@
             },
             "description": "The rendered QR code image — SVG or PNG per the requested `format`. The response `Content-Type` names the format actually returned and is authoritative.",
             "headers": {
+              "link": {
+                "description": "Opens the rendered code (design and content) in the QR Designer, as `\u003curl\u003e; rel=\"edit-form\"`. Sent only when the link reproduces the code exactly; otherwise `x-designer-url-unavailable` is sent instead.",
+                "schema": {
+                  "example": "\u003chttps://qrocodile.io/?…\u003e; rel=\"edit-form\"",
+                  "type": "string"
+                }
+              },
+              "x-designer-url-unavailable": {
+                "description": "Why there is no `link`: a comma-separated list of what the link cannot carry. Each item is a design config path such as `logo`, `content` for content the link cannot reproduce or fit, or `design` when the design alone makes the link too long. Sent only without a `link`.",
+                "schema": {
+                  "example": "logo",
+                  "type": "string"
+                }
+              },
               "x-ratelimit-limit": {
                 "description": "Requests allowed in the current window.",
                 "schema": {

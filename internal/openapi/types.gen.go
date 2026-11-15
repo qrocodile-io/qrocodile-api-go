@@ -124,6 +124,7 @@ func (e QrDesignConfigFinderFrameColor1Type) Valid() bool {
 // Defines values for QrDesignConfigFinderStyleId.
 const (
 	QrDesignConfigFinderStyleIdBlotchy   QrDesignConfigFinderStyleId = "blotchy"
+	QrDesignConfigFinderStyleIdBokeh     QrDesignConfigFinderStyleId = "bokeh"
 	QrDesignConfigFinderStyleIdBrush     QrDesignConfigFinderStyleId = "brush"
 	QrDesignConfigFinderStyleIdCarved    QrDesignConfigFinderStyleId = "carved"
 	QrDesignConfigFinderStyleIdClassic   QrDesignConfigFinderStyleId = "classic"
@@ -149,6 +150,8 @@ const (
 func (e QrDesignConfigFinderStyleId) Valid() bool {
 	switch e {
 	case QrDesignConfigFinderStyleIdBlotchy:
+		return true
+	case QrDesignConfigFinderStyleIdBokeh:
 		return true
 	case QrDesignConfigFinderStyleIdBrush:
 		return true
@@ -490,6 +493,7 @@ const (
 	QrDesignConfigModuleStyleIdBacteria       QrDesignConfigModuleStyleId = "bacteria"
 	QrDesignConfigModuleStyleIdBlocky         QrDesignConfigModuleStyleId = "blocky"
 	QrDesignConfigModuleStyleIdBlotchy        QrDesignConfigModuleStyleId = "blotchy"
+	QrDesignConfigModuleStyleIdBokeh          QrDesignConfigModuleStyleId = "bokeh"
 	QrDesignConfigModuleStyleIdBotanical      QrDesignConfigModuleStyleId = "botanical"
 	QrDesignConfigModuleStyleIdBrixx          QrDesignConfigModuleStyleId = "brixx"
 	QrDesignConfigModuleStyleIdBrush          QrDesignConfigModuleStyleId = "brush"
@@ -497,6 +501,7 @@ const (
 	QrDesignConfigModuleStyleIdCalligraphy    QrDesignConfigModuleStyleId = "calligraphy"
 	QrDesignConfigModuleStyleIdCharacters     QrDesignConfigModuleStyleId = "characters"
 	QrDesignConfigModuleStyleIdChevron        QrDesignConfigModuleStyleId = "chevron"
+	QrDesignConfigModuleStyleIdChristmasTree  QrDesignConfigModuleStyleId = "christmas-tree"
 	QrDesignConfigModuleStyleIdCircuits       QrDesignConfigModuleStyleId = "circuits"
 	QrDesignConfigModuleStyleIdClassic        QrDesignConfigModuleStyleId = "classic"
 	QrDesignConfigModuleStyleIdComicFries     QrDesignConfigModuleStyleId = "comic-fries"
@@ -511,6 +516,7 @@ const (
 	QrDesignConfigModuleStyleIdFireworks      QrDesignConfigModuleStyleId = "fireworks"
 	QrDesignConfigModuleStyleIdFish           QrDesignConfigModuleStyleId = "fish"
 	QrDesignConfigModuleStyleIdFlourish       QrDesignConfigModuleStyleId = "flourish"
+	QrDesignConfigModuleStyleIdGingerbread    QrDesignConfigModuleStyleId = "gingerbread"
 	QrDesignConfigModuleStyleIdGlitch         QrDesignConfigModuleStyleId = "glitch"
 	QrDesignConfigModuleStyleIdGrass          QrDesignConfigModuleStyleId = "grass"
 	QrDesignConfigModuleStyleIdHalfmoon       QrDesignConfigModuleStyleId = "halfmoon"
@@ -538,6 +544,7 @@ const (
 	QrDesignConfigModuleStyleIdRoundedDots    QrDesignConfigModuleStyleId = "roundedDots"
 	QrDesignConfigModuleStyleIdRoundedSquares QrDesignConfigModuleStyleId = "roundedSquares"
 	QrDesignConfigModuleStyleIdSketch         QrDesignConfigModuleStyleId = "sketch"
+	QrDesignConfigModuleStyleIdSnowfall       QrDesignConfigModuleStyleId = "snowfall"
 	QrDesignConfigModuleStyleIdSpiky          QrDesignConfigModuleStyleId = "spiky"
 	QrDesignConfigModuleStyleIdSplatter       QrDesignConfigModuleStyleId = "splatter"
 	QrDesignConfigModuleStyleIdSpooky         QrDesignConfigModuleStyleId = "spooky"
@@ -561,6 +568,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 		return true
 	case QrDesignConfigModuleStyleIdBlotchy:
 		return true
+	case QrDesignConfigModuleStyleIdBokeh:
+		return true
 	case QrDesignConfigModuleStyleIdBotanical:
 		return true
 	case QrDesignConfigModuleStyleIdBrixx:
@@ -574,6 +583,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 	case QrDesignConfigModuleStyleIdCharacters:
 		return true
 	case QrDesignConfigModuleStyleIdChevron:
+		return true
+	case QrDesignConfigModuleStyleIdChristmasTree:
 		return true
 	case QrDesignConfigModuleStyleIdCircuits:
 		return true
@@ -602,6 +613,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 	case QrDesignConfigModuleStyleIdFish:
 		return true
 	case QrDesignConfigModuleStyleIdFlourish:
+		return true
+	case QrDesignConfigModuleStyleIdGingerbread:
 		return true
 	case QrDesignConfigModuleStyleIdGlitch:
 		return true
@@ -656,6 +669,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 	case QrDesignConfigModuleStyleIdRoundedSquares:
 		return true
 	case QrDesignConfigModuleStyleIdSketch:
+		return true
+	case QrDesignConfigModuleStyleIdSnowfall:
 		return true
 	case QrDesignConfigModuleStyleIdSpiky:
 		return true
@@ -753,7 +768,9 @@ const (
 	QrDesignConfigPresetCandyBlocks      QrDesignConfigPreset = "candyBlocks"
 	QrDesignConfigPresetCarnival         QrDesignConfigPreset = "carnival"
 	QrDesignConfigPresetChristmasSweater QrDesignConfigPreset = "christmasSweater"
+	QrDesignConfigPresetChristmasTree    QrDesignConfigPreset = "christmasTree"
 	QrDesignConfigPresetCircuit          QrDesignConfigPreset = "circuit"
+	QrDesignConfigPresetCityLights       QrDesignConfigPreset = "cityLights"
 	QrDesignConfigPresetClassic          QrDesignConfigPreset = "classic"
 	QrDesignConfigPresetComicBricks      QrDesignConfigPreset = "comic-bricks"
 	QrDesignConfigPresetComicFries       QrDesignConfigPreset = "comic-fries"
@@ -779,7 +796,9 @@ const (
 	QrDesignConfigPresetFlourish         QrDesignConfigPreset = "flourish"
 	QrDesignConfigPresetForest           QrDesignConfigPreset = "forest"
 	QrDesignConfigPresetGalaxy           QrDesignConfigPreset = "galaxy"
+	QrDesignConfigPresetGingerbread      QrDesignConfigPreset = "gingerbread"
 	QrDesignConfigPresetGlitched         QrDesignConfigPreset = "glitched"
+	QrDesignConfigPresetGoldenHour       QrDesignConfigPreset = "goldenHour"
 	QrDesignConfigPresetGrass            QrDesignConfigPreset = "grass"
 	QrDesignConfigPresetHalloween        QrDesignConfigPreset = "halloween"
 	QrDesignConfigPresetHandmade         QrDesignConfigPreset = "handmade"
@@ -816,6 +835,7 @@ const (
 	QrDesignConfigPresetRetroWave70s     QrDesignConfigPreset = "retroWave70s"
 	QrDesignConfigPresetRipple           QrDesignConfigPreset = "ripple"
 	QrDesignConfigPresetSlimer           QrDesignConfigPreset = "slimer"
+	QrDesignConfigPresetSnowfall         QrDesignConfigPreset = "snowfall"
 	QrDesignConfigPresetStitches         QrDesignConfigPreset = "stitches"
 	QrDesignConfigPresetSummer           QrDesignConfigPreset = "summer"
 	QrDesignConfigPresetSunset           QrDesignConfigPreset = "sunset"
@@ -829,6 +849,7 @@ const (
 	QrDesignConfigPresetWashiTape        QrDesignConfigPreset = "washi-tape"
 	QrDesignConfigPresetWhatsapp         QrDesignConfigPreset = "whatsapp"
 	QrDesignConfigPresetWindswept        QrDesignConfigPreset = "windswept"
+	QrDesignConfigPresetWinterNight      QrDesignConfigPreset = "winterNight"
 	QrDesignConfigPresetWoodwork         QrDesignConfigPreset = "woodwork"
 	QrDesignConfigPresetYoutube          QrDesignConfigPreset = "youtube"
 	QrDesignConfigPresetZigzag           QrDesignConfigPreset = "zigzag"
@@ -873,7 +894,11 @@ func (e QrDesignConfigPreset) Valid() bool {
 		return true
 	case QrDesignConfigPresetChristmasSweater:
 		return true
+	case QrDesignConfigPresetChristmasTree:
+		return true
 	case QrDesignConfigPresetCircuit:
+		return true
+	case QrDesignConfigPresetCityLights:
 		return true
 	case QrDesignConfigPresetClassic:
 		return true
@@ -925,7 +950,11 @@ func (e QrDesignConfigPreset) Valid() bool {
 		return true
 	case QrDesignConfigPresetGalaxy:
 		return true
+	case QrDesignConfigPresetGingerbread:
+		return true
 	case QrDesignConfigPresetGlitched:
+		return true
+	case QrDesignConfigPresetGoldenHour:
 		return true
 	case QrDesignConfigPresetGrass:
 		return true
@@ -999,6 +1028,8 @@ func (e QrDesignConfigPreset) Valid() bool {
 		return true
 	case QrDesignConfigPresetSlimer:
 		return true
+	case QrDesignConfigPresetSnowfall:
+		return true
 	case QrDesignConfigPresetStitches:
 		return true
 	case QrDesignConfigPresetSummer:
@@ -1024,6 +1055,8 @@ func (e QrDesignConfigPreset) Valid() bool {
 	case QrDesignConfigPresetWhatsapp:
 		return true
 	case QrDesignConfigPresetWindswept:
+		return true
+	case QrDesignConfigPresetWinterNight:
 		return true
 	case QrDesignConfigPresetWoodwork:
 		return true
@@ -1092,7 +1125,9 @@ const (
 	RenderQrCodeParamsPresetCandyBlocks      RenderQrCodeParamsPreset = "candyBlocks"
 	RenderQrCodeParamsPresetCarnival         RenderQrCodeParamsPreset = "carnival"
 	RenderQrCodeParamsPresetChristmasSweater RenderQrCodeParamsPreset = "christmasSweater"
+	RenderQrCodeParamsPresetChristmasTree    RenderQrCodeParamsPreset = "christmasTree"
 	RenderQrCodeParamsPresetCircuit          RenderQrCodeParamsPreset = "circuit"
+	RenderQrCodeParamsPresetCityLights       RenderQrCodeParamsPreset = "cityLights"
 	RenderQrCodeParamsPresetClassic          RenderQrCodeParamsPreset = "classic"
 	RenderQrCodeParamsPresetComicBricks      RenderQrCodeParamsPreset = "comic-bricks"
 	RenderQrCodeParamsPresetComicFries       RenderQrCodeParamsPreset = "comic-fries"
@@ -1118,7 +1153,9 @@ const (
 	RenderQrCodeParamsPresetFlourish         RenderQrCodeParamsPreset = "flourish"
 	RenderQrCodeParamsPresetForest           RenderQrCodeParamsPreset = "forest"
 	RenderQrCodeParamsPresetGalaxy           RenderQrCodeParamsPreset = "galaxy"
+	RenderQrCodeParamsPresetGingerbread      RenderQrCodeParamsPreset = "gingerbread"
 	RenderQrCodeParamsPresetGlitched         RenderQrCodeParamsPreset = "glitched"
+	RenderQrCodeParamsPresetGoldenHour       RenderQrCodeParamsPreset = "goldenHour"
 	RenderQrCodeParamsPresetGrass            RenderQrCodeParamsPreset = "grass"
 	RenderQrCodeParamsPresetHalloween        RenderQrCodeParamsPreset = "halloween"
 	RenderQrCodeParamsPresetHandmade         RenderQrCodeParamsPreset = "handmade"
@@ -1155,6 +1192,7 @@ const (
 	RenderQrCodeParamsPresetRetroWave70s     RenderQrCodeParamsPreset = "retroWave70s"
 	RenderQrCodeParamsPresetRipple           RenderQrCodeParamsPreset = "ripple"
 	RenderQrCodeParamsPresetSlimer           RenderQrCodeParamsPreset = "slimer"
+	RenderQrCodeParamsPresetSnowfall         RenderQrCodeParamsPreset = "snowfall"
 	RenderQrCodeParamsPresetStitches         RenderQrCodeParamsPreset = "stitches"
 	RenderQrCodeParamsPresetSummer           RenderQrCodeParamsPreset = "summer"
 	RenderQrCodeParamsPresetSunset           RenderQrCodeParamsPreset = "sunset"
@@ -1168,6 +1206,7 @@ const (
 	RenderQrCodeParamsPresetWashiTape        RenderQrCodeParamsPreset = "washi-tape"
 	RenderQrCodeParamsPresetWhatsapp         RenderQrCodeParamsPreset = "whatsapp"
 	RenderQrCodeParamsPresetWindswept        RenderQrCodeParamsPreset = "windswept"
+	RenderQrCodeParamsPresetWinterNight      RenderQrCodeParamsPreset = "winterNight"
 	RenderQrCodeParamsPresetWoodwork         RenderQrCodeParamsPreset = "woodwork"
 	RenderQrCodeParamsPresetYoutube          RenderQrCodeParamsPreset = "youtube"
 	RenderQrCodeParamsPresetZigzag           RenderQrCodeParamsPreset = "zigzag"
@@ -1212,7 +1251,11 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 		return true
 	case RenderQrCodeParamsPresetChristmasSweater:
 		return true
+	case RenderQrCodeParamsPresetChristmasTree:
+		return true
 	case RenderQrCodeParamsPresetCircuit:
+		return true
+	case RenderQrCodeParamsPresetCityLights:
 		return true
 	case RenderQrCodeParamsPresetClassic:
 		return true
@@ -1264,7 +1307,11 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 		return true
 	case RenderQrCodeParamsPresetGalaxy:
 		return true
+	case RenderQrCodeParamsPresetGingerbread:
+		return true
 	case RenderQrCodeParamsPresetGlitched:
+		return true
+	case RenderQrCodeParamsPresetGoldenHour:
 		return true
 	case RenderQrCodeParamsPresetGrass:
 		return true
@@ -1338,6 +1385,8 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 		return true
 	case RenderQrCodeParamsPresetSlimer:
 		return true
+	case RenderQrCodeParamsPresetSnowfall:
+		return true
 	case RenderQrCodeParamsPresetStitches:
 		return true
 	case RenderQrCodeParamsPresetSummer:
@@ -1363,6 +1412,8 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 	case RenderQrCodeParamsPresetWhatsapp:
 		return true
 	case RenderQrCodeParamsPresetWindswept:
+		return true
+	case RenderQrCodeParamsPresetWinterNight:
 		return true
 	case RenderQrCodeParamsPresetWoodwork:
 		return true
