@@ -331,3 +331,78 @@ func TestEnumValueLists_eachCallReturnsAnIndependentCopy(t *testing.T) {
 		t.Errorf("mutating one PresetIDs() call's result changed a later call's result: got %q, want %q: the two calls are sharing a backing array", fresh[0], original)
 	}
 }
+
+func TestRender_designerURL(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Link", `<https://qrocodile.io/?c=abc&utm_source=api>; rel="edit-form"`)
+		_, _ = w.Write([]byte("<svg/>"))
+	}))
+	defer server.Close()
+
+	c := NewClient("qk_live_test", WithBaseURL(server.URL))
+	result, err := c.Render(context.Background(), FormatSVG, RenderInput{Content: "x"})
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if string(result.Image) != "<svg/>" {
+		t.Errorf("Image = %q", result.Image)
+	}
+	if result.DesignerURL != "https://qrocodile.io/?c=abc&utm_source=api" {
+		t.Errorf("DesignerURL = %q", result.DesignerURL)
+	}
+	if result.DesignerURLUnavailable != nil {
+		t.Errorf("DesignerURLUnavailable = %v, want nil", result.DesignerURLUnavailable)
+	}
+}
+
+func TestRender_designerURLUnavailable(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Designer-Url-Unavailable", "logo, content")
+		_, _ = w.Write([]byte{0x89, 0x50})
+	}))
+	defer server.Close()
+
+	c := NewClient("qk_live_test", WithBaseURL(server.URL))
+	result, err := c.Render(context.Background(), FormatPNG, RenderInput{Content: "x"})
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if result.DesignerURL != "" {
+		t.Errorf("DesignerURL = %q, want empty", result.DesignerURL)
+	}
+	if strings.Join(result.DesignerURLUnavailable, "|") != "logo|content" {
+		t.Errorf("DesignerURLUnavailable = %v", result.DesignerURLUnavailable)
+	}
+}
+
+func TestRender_rejectsUnknownFormat(t *testing.T) {
+	c := NewClient("qk_live_test", WithBaseURL("http://127.0.0.1:0"))
+	if _, err := c.Render(context.Background(), Format("gif"), RenderInput{Content: "x"}); err == nil {
+		t.Fatal("Render with format gif: want error, got nil")
+	}
+}
+
+func TestEditFormLink(t *testing.T) {
+	cases := []struct {
+		name   string
+		values []string
+		want   string
+	}{
+		{"none", nil, ""},
+		{"single", []string{`<https://a/>; rel="edit-form"`}, "https://a/"},
+		{"unquoted", []string{`<https://a/>; rel=edit-form`}, "https://a/"},
+		{"among several relations", []string{`<https://a/>; rel="alternate edit-form"`}, "https://a/"},
+		{"second of a list", []string{`<https://b/>; rel="next", <https://a/>; rel="edit-form"`}, "https://a/"},
+		{"first of a list", []string{`<https://a/>; rel="edit-form", <https://b/>; rel="next"`}, "https://a/"},
+		{"second header value", []string{`<https://b/>; rel="next"`, `<https://a/>; rel="edit-form"`}, "https://a/"},
+		{"other relation only", []string{`<https://b/>; rel="next"`}, ""},
+		{"url containing a comma", []string{`<https://a/?x=1,2>; rel="edit-form"`}, "https://a/?x=1,2"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := editFormLink(tc.values); got != tc.want {
+				t.Errorf("editFormLink(%q) = %q, want %q", tc.values, got, tc.want)
+			}
+		})
+	}
+}

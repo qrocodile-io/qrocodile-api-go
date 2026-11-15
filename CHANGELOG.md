@@ -8,6 +8,7 @@ Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.o
 
 - Add the `knit` module style and the `retroConsole` preset.
 - Add the `bokeh`, `snowfall`, `gingerbread`, and `christmas-tree` module styles, the `bokeh` finder style, and the `cityLights`, `goldenHour`, `snowfall`, `winterNight`, `gingerbread`, and `christmasTree` presets.
+- Add `Render(ctx, format, input)`, which returns the image together with a link that opens the code in the QR Designer, or the reason the API could not build one.
 
 ### Changed
 

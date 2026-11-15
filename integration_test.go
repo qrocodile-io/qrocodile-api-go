@@ -105,3 +105,30 @@ func firstN(s string, n int) string {
 	}
 	return s[:n]
 }
+
+func TestIntegration_RenderDesignerURL(t *testing.T) {
+	apiKey := os.Getenv("QR_API_KEY")
+	if apiKey == "" {
+		if os.Getenv("QR_API_INTEGRATION_REQUIRED") == "true" {
+			t.Fatal("QR_API_KEY is required (QR_API_INTEGRATION_REQUIRED=true)")
+		}
+		t.Skip("QR_API_KEY not set, skipping integration test")
+	}
+
+	var opts []ClientOption
+	if baseURL := os.Getenv("QR_API_URL"); baseURL != "" {
+		opts = append(opts, WithBaseURL(baseURL))
+	}
+	c := NewClient(apiKey, opts...)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	result, err := c.Render(ctx, FormatSVG, RenderInput{Content: "https://qrocodile.io", Design: []byte(`{"preset":"ocean"}`)})
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.HasPrefix(result.DesignerURL, "http") {
+		t.Errorf("DesignerURL = %q (unavailable: %v), want a link", result.DesignerURL, result.DesignerURLUnavailable)
+	}
+}

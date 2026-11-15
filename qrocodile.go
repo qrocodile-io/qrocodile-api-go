@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/qrocodile-io/qrocodile-api-go/internal/openapi"
 )
@@ -117,8 +119,9 @@ func NewClient(apiKey string, opts ...ClientOption) *Client {
 	return c
 }
 
-// RenderInput is the input to [Client.RenderSVG] and [Client.RenderPNG]: everything POST
-// /v1/qr accepts except `format`, which each method picks by name instead.
+// RenderInput is the input to [Client.Render], [Client.RenderSVG] and [Client.RenderPNG]:
+// everything POST /v1/qr accepts except `format`, which Render takes as an argument and the
+// other two imply by their name.
 type RenderInput struct {
 	// Content is the value encoded into the QR code, verbatim. It is usually a URL, but any string
 	// works, including payload formats such as `WIFI:T:WPA;S:Cafe;P:secret;;`, `mailto:…` or a
@@ -157,26 +160,116 @@ func (in RenderInput) requestBody(format string) ([]byte, error) {
 	return json.Marshal(body)
 }
 
+// Format is the image format [Client.Render] asks for.
+type Format string
+
+const (
+	// FormatSVG is SVG markup, UTF-8.
+	FormatSVG Format = "svg"
+	// FormatPNG is PNG bytes.
+	FormatPNG Format = "png"
+)
+
+// RenderResult is what [Client.Render] returns: the image plus the link that opens it in the QR
+// Designer.
+type RenderResult struct {
+	// Image is the rendered image: SVG markup for [FormatSVG], PNG bytes for [FormatPNG].
+	Image []byte
+
+	// DesignerURL opens the same code (design and content) in the QR Designer to keep editing
+	// it, from the response's `Link: <…>; rel="edit-form"` header. Empty when the API cannot
+	// build a link that reproduces the code exactly; DesignerURLUnavailable then says why.
+	DesignerURL string
+
+	// DesignerURLUnavailable names what the designer link cannot carry, from the
+	// `X-Designer-Url-Unavailable` header. Each item is a design config path such as `logo`,
+	// `content` for content the link cannot reproduce or fit, or `design` when the design alone
+	// makes the link too long. Empty whenever DesignerURL is set.
+	DesignerURLUnavailable []string
+}
+
+// Render renders a QR code in the given format (POST /v1/qr) and returns the image together with
+// its designer link. [Client.RenderSVG] and [Client.RenderPNG] return only the image.
+func (c *Client) Render(ctx context.Context, format Format, in RenderInput) (RenderResult, error) {
+	if format != FormatSVG && format != FormatPNG {
+		return RenderResult{}, fmt.Errorf("qrocodile: unknown format %q, want %q or %q", format, FormatSVG, FormatPNG)
+	}
+	body, err := in.requestBody(string(format))
+	if err != nil {
+		return RenderResult{}, fmt.Errorf("qrocodile: encoding request: %w", err)
+	}
+	respBody, header, err := c.do(ctx, "/v1/qr", body)
+	if err != nil {
+		return RenderResult{}, err
+	}
+	result := RenderResult{Image: respBody, DesignerURL: editFormLink(header.Values("Link"))}
+	if result.DesignerURL == "" {
+		result.DesignerURLUnavailable = splitList(header.Get("X-Designer-Url-Unavailable"))
+	}
+	return result, nil
+}
+
 // RenderSVG renders an SVG string (POST /v1/qr with format=svg).
 func (c *Client) RenderSVG(ctx context.Context, in RenderInput) (string, error) {
-	body, err := in.requestBody("svg")
-	if err != nil {
-		return "", fmt.Errorf("qrocodile: encoding request: %w", err)
-	}
-	respBody, err := c.post(ctx, "/v1/qr", body)
+	result, err := c.Render(ctx, FormatSVG, in)
 	if err != nil {
 		return "", err
 	}
-	return string(respBody), nil
+	return string(result.Image), nil
 }
 
 // RenderPNG renders PNG bytes (POST /v1/qr with format=png). Same input as [Client.RenderSVG].
 func (c *Client) RenderPNG(ctx context.Context, in RenderInput) ([]byte, error) {
-	body, err := in.requestBody("png")
+	result, err := c.Render(ctx, FormatPNG, in)
 	if err != nil {
-		return nil, fmt.Errorf("qrocodile: encoding request: %w", err)
+		return nil, err
 	}
-	return c.post(ctx, "/v1/qr", body)
+	return result.Image, nil
+}
+
+// linkEntry matches one `<url>; params` entry of a Link header (RFC 8288).
+var linkEntry = regexp.MustCompile(`<([^>]*)>([^<]*)`)
+
+// editFormLink returns the URL of the first `rel="edit-form"` link among Link header values, or
+// "" without one.
+func editFormLink(values []string) string {
+	for _, value := range values {
+		for _, m := range linkEntry.FindAllStringSubmatch(value, -1) {
+			// The params run up to the next entry, so they may end in its separating comma.
+			if hasRel(strings.TrimRight(strings.TrimSpace(m[2]), ","), "edit-form") {
+				return m[1]
+			}
+		}
+	}
+	return ""
+}
+
+// hasRel reports whether a link's `; rel="…"` params name the relation, which may be one of
+// several space-separated ones.
+func hasRel(params, relation string) bool {
+	for _, param := range strings.Split(params, ";") {
+		name, value, ok := strings.Cut(param, "=")
+		if !ok || !strings.EqualFold(strings.TrimSpace(name), "rel") {
+			continue
+		}
+		for _, rel := range strings.Fields(strings.Trim(strings.TrimSpace(value), `"`)) {
+			if strings.EqualFold(rel, relation) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// splitList splits a comma-separated header value, dropping empty items.
+func splitList(value string) []string {
+	var items []string
+	for _, item := range strings.Split(value, ",") {
+		if item = strings.TrimSpace(item); item != "" {
+			items = append(items, item)
+		}
+	}
+	return items
 }
 
 // RegisterKeyResult is what [Client.RegisterKey] returns.
@@ -250,9 +343,15 @@ func (c *Client) ConfirmKey(ctx context.Context, code string, id ConfirmKeyIdent
 // A genuine network failure (offline, DNS, timeout, ctx canceled) returns the underlying error
 // instead, because it never reached the API and has no status or code.
 func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, error) {
+	respBody, _, err := c.do(ctx, path, body)
+	return respBody, err
+}
+
+// do is [Client.post] that also returns the response headers.
+func (c *Client) do(ctx context.Context, path string, body []byte) ([]byte, http.Header, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+path, bytes.NewReader(body))
 	if err != nil {
-		return nil, fmt.Errorf("qrocodile: building request: %w", err)
+		return nil, nil, fmt.Errorf("qrocodile: building request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
@@ -262,19 +361,19 @@ func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, er
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("qrocodile: %w", err)
+		return nil, nil, fmt.Errorf("qrocodile: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("qrocodile: reading response: %w", err)
+		return nil, nil, fmt.Errorf("qrocodile: reading response: %w", err)
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, parseAPIError(resp.StatusCode, respBody)
+		return nil, nil, parseAPIError(resp.StatusCode, respBody)
 	}
-	return respBody, nil
+	return respBody, resp.Header, nil
 }
 
 func parseAPIError(status int, body []byte) error {

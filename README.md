@@ -48,9 +48,20 @@ svg, err := qr.RenderSVG(ctx, qrocodile.RenderInput{
 png, err := qr.RenderPNG(ctx, qrocodile.RenderInput{Content: "WIFI:T:WPA;S:Cafe;P:latte123;;"})
 ```
 
-There are two render methods, one per output: `RenderSVG` returns a `string`, `RenderPNG` returns a `[]byte`. Both take the same input: `Content` (the string to encode) plus optional `Design` (the full design config, as raw JSON), `Size`, and `FixContrast`. They call `POST /v1/qr`, which supports every option. The `GET /v1/qr` variant has no method yet.
+`RenderSVG` returns a `string`, `RenderPNG` returns a `[]byte`, and `Render` returns either as a `[]byte` together with a QR Designer link (see below). All three take the same input: `Content` (the string to encode) plus optional `Design` (the full design config, as raw JSON), `Size`, and `FixContrast`. They call `POST /v1/qr`, which supports every option. The `GET /v1/qr` variant has no method yet.
 
 `Design` is raw JSON, not a Go struct. To build one, style a QR code in the [QR Designer](https://qrocodile.io/en/), choose its “Copy JSON” button, and paste the result in, either read from a file or inline. You can also write the JSON by hand. The package doc comment explains why the design config isn’t exposed field by field.
+
+### Open in the QR Designer
+
+To keep editing a code in the [QR Designer](https://qrocodile.io/en/), use `Render`. It returns the image together with a link that opens the same code (design and content) there:
+
+```go
+result, err := qr.Render(ctx, qrocodile.FormatPNG, qrocodile.RenderInput{Content: "https://qrocodile.io"})
+// result.Image is the PNG; result.DesignerURL is the link.
+```
+
+The API only hands out a link that reproduces the code exactly. When it can’t (an uploaded logo, or content too long for a link), `DesignerURL` is empty and `DesignerURLUnavailable` names why, e.g. `["logo"]`.
 
 ## Errors
 
