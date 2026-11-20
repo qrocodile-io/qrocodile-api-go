@@ -523,6 +523,7 @@ const (
 	QrDesignConfigModuleStyleIdInkPen         QrDesignConfigModuleStyleId = "ink-pen"
 	QrDesignConfigModuleStyleIdIsometric      QrDesignConfigModuleStyleId = "isometric"
 	QrDesignConfigModuleStyleIdKnit           QrDesignConfigModuleStyleId = "knit"
+	QrDesignConfigModuleStyleIdKoiPond        QrDesignConfigModuleStyleId = "koi-pond"
 	QrDesignConfigModuleStyleIdLeaves         QrDesignConfigModuleStyleId = "leaves"
 	QrDesignConfigModuleStyleIdMegaShapes     QrDesignConfigModuleStyleId = "megaShapes"
 	QrDesignConfigModuleStyleIdMosaic         QrDesignConfigModuleStyleId = "mosaic"
@@ -627,6 +628,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 	case QrDesignConfigModuleStyleIdIsometric:
 		return true
 	case QrDesignConfigModuleStyleIdKnit:
+		return true
+	case QrDesignConfigModuleStyleIdKoiPond:
 		return true
 	case QrDesignConfigModuleStyleIdLeaves:
 		return true
@@ -805,7 +808,9 @@ const (
 	QrDesignConfigPresetHypnotic         QrDesignConfigPreset = "hypnotic"
 	QrDesignConfigPresetIcy              QrDesignConfigPreset = "icy"
 	QrDesignConfigPresetInkBloom         QrDesignConfigPreset = "inkBloom"
+	QrDesignConfigPresetInkPond          QrDesignConfigPreset = "inkPond"
 	QrDesignConfigPresetInstagram        QrDesignConfigPreset = "instagram"
+	QrDesignConfigPresetKoiPond          QrDesignConfigPreset = "koiPond"
 	QrDesignConfigPresetLazyArt          QrDesignConfigPreset = "lazyArt"
 	QrDesignConfigPresetLinkedin         QrDesignConfigPreset = "linkedin"
 	QrDesignConfigPresetMidCentury       QrDesignConfigPreset = "midCentury"
@@ -968,7 +973,11 @@ func (e QrDesignConfigPreset) Valid() bool {
 		return true
 	case QrDesignConfigPresetInkBloom:
 		return true
+	case QrDesignConfigPresetInkPond:
+		return true
 	case QrDesignConfigPresetInstagram:
+		return true
+	case QrDesignConfigPresetKoiPond:
 		return true
 	case QrDesignConfigPresetLazyArt:
 		return true
@@ -1162,7 +1171,9 @@ const (
 	RenderQrCodeParamsPresetHypnotic         RenderQrCodeParamsPreset = "hypnotic"
 	RenderQrCodeParamsPresetIcy              RenderQrCodeParamsPreset = "icy"
 	RenderQrCodeParamsPresetInkBloom         RenderQrCodeParamsPreset = "inkBloom"
+	RenderQrCodeParamsPresetInkPond          RenderQrCodeParamsPreset = "inkPond"
 	RenderQrCodeParamsPresetInstagram        RenderQrCodeParamsPreset = "instagram"
+	RenderQrCodeParamsPresetKoiPond          RenderQrCodeParamsPreset = "koiPond"
 	RenderQrCodeParamsPresetLazyArt          RenderQrCodeParamsPreset = "lazyArt"
 	RenderQrCodeParamsPresetLinkedin         RenderQrCodeParamsPreset = "linkedin"
 	RenderQrCodeParamsPresetMidCentury       RenderQrCodeParamsPreset = "midCentury"
@@ -1325,7 +1336,11 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 		return true
 	case RenderQrCodeParamsPresetInkBloom:
 		return true
+	case RenderQrCodeParamsPresetInkPond:
+		return true
 	case RenderQrCodeParamsPresetInstagram:
+		return true
+	case RenderQrCodeParamsPresetKoiPond:
 		return true
 	case RenderQrCodeParamsPresetLazyArt:
 		return true

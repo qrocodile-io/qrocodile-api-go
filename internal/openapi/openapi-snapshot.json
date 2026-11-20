@@ -971,6 +971,8 @@
                 "circuit",
                 "connected",
                 "rainyDay",
+                "koiPond",
+                "inkPond",
                 "blocky",
                 "christmasSweater",
                 "snowfall",
@@ -2239,6 +2241,7 @@
                           "petals",
                           "variedDots",
                           "ripple",
+                          "koi-pond",
                           "isometric"
                         ],
                         "type": "string"
@@ -2329,6 +2332,8 @@
                           "circuit",
                           "connected",
                           "rainyDay",
+                          "koiPond",
+                          "inkPond",
                           "blocky",
                           "christmasSweater",
                           "snowfall",
