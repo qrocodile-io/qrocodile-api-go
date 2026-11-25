@@ -510,6 +510,7 @@ const (
 	QrDesignConfigModuleStyleIdDither         QrDesignConfigModuleStyleId = "dither"
 	QrDesignConfigModuleStyleIdDoodle         QrDesignConfigModuleStyleId = "doodle"
 	QrDesignConfigModuleStyleIdDoubleBubble   QrDesignConfigModuleStyleId = "double-bubble"
+	QrDesignConfigModuleStyleIdDowntown       QrDesignConfigModuleStyleId = "downtown"
 	QrDesignConfigModuleStyleIdDrip           QrDesignConfigModuleStyleId = "drip"
 	QrDesignConfigModuleStyleIdExplosion      QrDesignConfigModuleStyleId = "explosion"
 	QrDesignConfigModuleStyleIdFilm           QrDesignConfigModuleStyleId = "film"
@@ -527,6 +528,7 @@ const (
 	QrDesignConfigModuleStyleIdLeaves         QrDesignConfigModuleStyleId = "leaves"
 	QrDesignConfigModuleStyleIdMegaShapes     QrDesignConfigModuleStyleId = "megaShapes"
 	QrDesignConfigModuleStyleIdMosaic         QrDesignConfigModuleStyleId = "mosaic"
+	QrDesignConfigModuleStyleIdMoss           QrDesignConfigModuleStyleId = "moss"
 	QrDesignConfigModuleStyleIdN3d            QrDesignConfigModuleStyleId = "3d"
 	QrDesignConfigModuleStyleIdNeighborAware  QrDesignConfigModuleStyleId = "neighborAware"
 	QrDesignConfigModuleStyleIdOrganic        QrDesignConfigModuleStyleId = "organic"
@@ -603,6 +605,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 		return true
 	case QrDesignConfigModuleStyleIdDoubleBubble:
 		return true
+	case QrDesignConfigModuleStyleIdDowntown:
+		return true
 	case QrDesignConfigModuleStyleIdDrip:
 		return true
 	case QrDesignConfigModuleStyleIdExplosion:
@@ -636,6 +640,8 @@ func (e QrDesignConfigModuleStyleId) Valid() bool {
 	case QrDesignConfigModuleStyleIdMegaShapes:
 		return true
 	case QrDesignConfigModuleStyleIdMosaic:
+		return true
+	case QrDesignConfigModuleStyleIdMoss:
 		return true
 	case QrDesignConfigModuleStyleIdN3d:
 		return true
@@ -758,6 +764,7 @@ const (
 	QrDesignConfigPresetAutumn           QrDesignConfigPreset = "autumn"
 	QrDesignConfigPresetBacteria         QrDesignConfigPreset = "bacteria"
 	QrDesignConfigPresetBats             QrDesignConfigPreset = "bats"
+	QrDesignConfigPresetBeachTown        QrDesignConfigPreset = "beachTown"
 	QrDesignConfigPresetBigFish          QrDesignConfigPreset = "bigFish"
 	QrDesignConfigPresetBlocky           QrDesignConfigPreset = "blocky"
 	QrDesignConfigPresetBlotchy          QrDesignConfigPreset = "blotchy"
@@ -788,6 +795,7 @@ const (
 	QrDesignConfigPresetDither           QrDesignConfigPreset = "dither"
 	QrDesignConfigPresetDitherRainbow    QrDesignConfigPreset = "ditherRainbow"
 	QrDesignConfigPresetDoodle           QrDesignConfigPreset = "doodle"
+	QrDesignConfigPresetDowntown         QrDesignConfigPreset = "downtown"
 	QrDesignConfigPresetElNino           QrDesignConfigPreset = "el-nino"
 	QrDesignConfigPresetElegant          QrDesignConfigPreset = "elegant"
 	QrDesignConfigPresetEscher           QrDesignConfigPreset = "escher"
@@ -819,6 +827,7 @@ const (
 	QrDesignConfigPresetModern           QrDesignConfigPreset = "modern"
 	QrDesignConfigPresetMorseCode        QrDesignConfigPreset = "morseCode"
 	QrDesignConfigPresetMosaic           QrDesignConfigPreset = "mosaic"
+	QrDesignConfigPresetMossWall         QrDesignConfigPreset = "mossWall"
 	QrDesignConfigPresetNeonDrip         QrDesignConfigPreset = "neonDrip"
 	QrDesignConfigPresetNewYear          QrDesignConfigPreset = "newYear"
 	QrDesignConfigPresetNickelodeon      QrDesignConfigPreset = "nickelodeon"
@@ -872,6 +881,8 @@ func (e QrDesignConfigPreset) Valid() bool {
 	case QrDesignConfigPresetBacteria:
 		return true
 	case QrDesignConfigPresetBats:
+		return true
+	case QrDesignConfigPresetBeachTown:
 		return true
 	case QrDesignConfigPresetBigFish:
 		return true
@@ -932,6 +943,8 @@ func (e QrDesignConfigPreset) Valid() bool {
 	case QrDesignConfigPresetDitherRainbow:
 		return true
 	case QrDesignConfigPresetDoodle:
+		return true
+	case QrDesignConfigPresetDowntown:
 		return true
 	case QrDesignConfigPresetElNino:
 		return true
@@ -994,6 +1007,8 @@ func (e QrDesignConfigPreset) Valid() bool {
 	case QrDesignConfigPresetMorseCode:
 		return true
 	case QrDesignConfigPresetMosaic:
+		return true
+	case QrDesignConfigPresetMossWall:
 		return true
 	case QrDesignConfigPresetNeonDrip:
 		return true
@@ -1121,6 +1136,7 @@ const (
 	RenderQrCodeParamsPresetAutumn           RenderQrCodeParamsPreset = "autumn"
 	RenderQrCodeParamsPresetBacteria         RenderQrCodeParamsPreset = "bacteria"
 	RenderQrCodeParamsPresetBats             RenderQrCodeParamsPreset = "bats"
+	RenderQrCodeParamsPresetBeachTown        RenderQrCodeParamsPreset = "beachTown"
 	RenderQrCodeParamsPresetBigFish          RenderQrCodeParamsPreset = "bigFish"
 	RenderQrCodeParamsPresetBlocky           RenderQrCodeParamsPreset = "blocky"
 	RenderQrCodeParamsPresetBlotchy          RenderQrCodeParamsPreset = "blotchy"
@@ -1151,6 +1167,7 @@ const (
 	RenderQrCodeParamsPresetDither           RenderQrCodeParamsPreset = "dither"
 	RenderQrCodeParamsPresetDitherRainbow    RenderQrCodeParamsPreset = "ditherRainbow"
 	RenderQrCodeParamsPresetDoodle           RenderQrCodeParamsPreset = "doodle"
+	RenderQrCodeParamsPresetDowntown         RenderQrCodeParamsPreset = "downtown"
 	RenderQrCodeParamsPresetElNino           RenderQrCodeParamsPreset = "el-nino"
 	RenderQrCodeParamsPresetElegant          RenderQrCodeParamsPreset = "elegant"
 	RenderQrCodeParamsPresetEscher           RenderQrCodeParamsPreset = "escher"
@@ -1182,6 +1199,7 @@ const (
 	RenderQrCodeParamsPresetModern           RenderQrCodeParamsPreset = "modern"
 	RenderQrCodeParamsPresetMorseCode        RenderQrCodeParamsPreset = "morseCode"
 	RenderQrCodeParamsPresetMosaic           RenderQrCodeParamsPreset = "mosaic"
+	RenderQrCodeParamsPresetMossWall         RenderQrCodeParamsPreset = "mossWall"
 	RenderQrCodeParamsPresetNeonDrip         RenderQrCodeParamsPreset = "neonDrip"
 	RenderQrCodeParamsPresetNewYear          RenderQrCodeParamsPreset = "newYear"
 	RenderQrCodeParamsPresetNickelodeon      RenderQrCodeParamsPreset = "nickelodeon"
@@ -1235,6 +1253,8 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 	case RenderQrCodeParamsPresetBacteria:
 		return true
 	case RenderQrCodeParamsPresetBats:
+		return true
+	case RenderQrCodeParamsPresetBeachTown:
 		return true
 	case RenderQrCodeParamsPresetBigFish:
 		return true
@@ -1295,6 +1315,8 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 	case RenderQrCodeParamsPresetDitherRainbow:
 		return true
 	case RenderQrCodeParamsPresetDoodle:
+		return true
+	case RenderQrCodeParamsPresetDowntown:
 		return true
 	case RenderQrCodeParamsPresetElNino:
 		return true
@@ -1357,6 +1379,8 @@ func (e RenderQrCodeParamsPreset) Valid() bool {
 	case RenderQrCodeParamsPresetMorseCode:
 		return true
 	case RenderQrCodeParamsPresetMosaic:
+		return true
+	case RenderQrCodeParamsPresetMossWall:
 		return true
 	case RenderQrCodeParamsPresetNeonDrip:
 		return true

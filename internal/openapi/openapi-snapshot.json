@@ -973,6 +973,9 @@
                 "rainyDay",
                 "koiPond",
                 "inkPond",
+                "downtown",
+                "beachTown",
+                "mossWall",
                 "blocky",
                 "christmasSweater",
                 "snowfall",
@@ -2242,6 +2245,8 @@
                           "variedDots",
                           "ripple",
                           "koi-pond",
+                          "downtown",
+                          "moss",
                           "isometric"
                         ],
                         "type": "string"
@@ -2334,6 +2339,9 @@
                           "rainyDay",
                           "koiPond",
                           "inkPond",
+                          "downtown",
+                          "beachTown",
+                          "mossWall",
                           "blocky",
                           "christmasSweater",
                           "snowfall",

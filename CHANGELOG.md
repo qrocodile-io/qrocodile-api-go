@@ -2,6 +2,12 @@
 
 Notable changes to `qrocodile-api-go`. Versions follow [SemVer](https://semver.org/), with the usual pre-1.0 caveat: while the major is `0`, a **minor** bump may carry breaking changes.
 
+## Unreleased
+
+### Added
+
+- Add the `koiPond`, `inkPond`, `beachTown`, `downtown`, and `mossWall` presets, and the `koi-pond`, `downtown`, and `moss` module styles.
+
 ## 0.3.0
 
 ### Added
